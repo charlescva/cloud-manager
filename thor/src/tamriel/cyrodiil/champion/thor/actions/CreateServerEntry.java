@@ -24,7 +24,7 @@ displayName = "#CTL_CreateServerEntry")
 public final class CreateServerEntry implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
-        // TODO implement action body
+        
         NewServerDialog nds = new NewServerDialog(null, true);
         nds.setVisible(true);
         

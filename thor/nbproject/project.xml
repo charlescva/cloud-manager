@@ -50,12 +50,8 @@
             </module-dependencies>
             <public-packages/>
             <class-path-extension>
-                <runtime-relative-path>ext/ganymed-ssh.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/ganymed-ssh.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/zookeeper-3.3.5-cdh3u4.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/zookeeper-3.3.5-cdh3u4.jar</binary-origin>
+                <runtime-relative-path>ext/ganymed-ssh2-build210.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/ganymed-ssh2-build210.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>
