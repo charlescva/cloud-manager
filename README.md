@@ -3,6 +3,7 @@ cloud-manager
 
 Netbeans Platform Module for management of open source distributed software
 
+Updated 12/28/2013
 
 The idea behind this tool is to provide a Plugin for Netbeans that allows easier management of open source
 distributed software.  Currently I'm the only one working on it in my spare time.  At this point you can build a list
