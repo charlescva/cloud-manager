@@ -21,7 +21,7 @@ displayName = "#CTL_CreateServerEntry")
     @ActionReference(path = "Menu/File", position = 1300)
 })
 @Messages("CTL_CreateServerEntry=Add Nimbus Server")
-public final class CreateServerEntry implements ActionListener {
+public final class CreateNimbusServer implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         

@@ -37,19 +37,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Servers }
+     * Create an instance of {@link JaxbNimbusServers }
      * 
      */
-    public Servers createServers() {
-        return new Servers();
+    public JaxbNimbusServers createServers() {
+        return new JaxbNimbusServers();
     }
 
     /**
-     * Create an instance of {@link Servers.Server }
+     * Create an instance of {@link Servers.NimbusServer }
      * 
      */
-    public Servers.Server createServersServer() {
-        return new Servers.Server();
+    public JaxbNimbusServers.JaxbNimbusServer createServersServer() {
+        return new JaxbNimbusServers.JaxbNimbusServer();
     }
 
 }

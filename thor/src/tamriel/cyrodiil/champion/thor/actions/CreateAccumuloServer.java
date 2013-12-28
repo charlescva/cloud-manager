@@ -21,7 +21,7 @@ import tamriel.cyrodiil.champion.thor.ui.NewAccumuloDialog;
         displayName = "#CTL_CreateAccumuloServer"
 )
 @ActionReference(path = "Menu/File", position = 1200)
-@Messages("CTL_CreateAccumuloServer=Add Accumulo Server")
+@Messages("CTL_CreateAccumuloServer=Fetch Accumulo Tables")
 public final class CreateAccumuloServer implements ActionListener {
 
     @Override

@@ -5,14 +5,15 @@
  */
 package tamriel.cyrodiil.champion.thor.ui;
 
-import java.io.StringWriter;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
+import java.net.URL;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import org.w3c.dom.Document;
 import tamriel.cyrodiil.champion.thor.bo.AccumuloConfiguration;
+import tamriel.cyrodiil.champion.thor.jaxb.accumulo.Stats;
+import tamriel.cyrodiil.champion.thor.jaxb.accumulo.Table;
+import tamriel.cyrodiil.champion.thor.jaxb.accumulo.Tables;
 
 /**
  *
@@ -42,8 +43,11 @@ public class NewAccumuloDialog extends javax.swing.JDialog {
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jEditorPane1 = new javax.swing.JEditorPane();
+        jLabel2 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle(org.openide.util.NbBundle.getMessage(NewAccumuloDialog.class, "NewAccumuloDialog.title")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(NewAccumuloDialog.class, "NewAccumuloDialog.jLabel1.text")); // NOI18N
 
@@ -58,6 +62,10 @@ public class NewAccumuloDialog extends javax.swing.JDialog {
 
         jScrollPane1.setViewportView(jEditorPane1);
 
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(NewAccumuloDialog.class, "NewAccumuloDialog.jLabel2.text")); // NOI18N
+
+        jTextField2.setText(org.openide.util.NbBundle.getMessage(NewAccumuloDialog.class, "NewAccumuloDialog.jTextField2.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -71,7 +79,10 @@ public class NewAccumuloDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextField1))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton1)))
                 .addContainerGap())
         );
@@ -83,7 +94,10 @@ public class NewAccumuloDialog extends javax.swing.JDialog {
                     .addComponent(jLabel1)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
                 .addContainerGap())
@@ -92,22 +106,27 @@ public class NewAccumuloDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private JAXBContext jaxbContext;
+    private Unmarshaller jaxbUnmarshaller;
+    private Marshaller jaxbMarshaller;
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         AccumuloConfiguration ac = new AccumuloConfiguration();
+
         try {
-            Document xml = ac.fetchConfig(jTextField1.getText());
+            //Document xml = ac.fetchConfig(jTextField1.getText());
 
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer xform = factory.newTransformer();
+            jaxbContext = JAXBContext.newInstance(Stats.class);
+            jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            jaxbMarshaller = jaxbContext.createMarshaller();
 
-            TransformerFactory tf = TransformerFactory.newInstance();
-            Transformer transformer = tf.newTransformer();
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            StringWriter writer = new StringWriter();
-            transformer.transform(new DOMSource(xml), new StreamResult(writer));
-            String output = writer.getBuffer().toString().replaceAll("\n|\r", "");
-            jEditorPane1.setText(output);
+            Stats stats = new Stats();
+            stats = (Stats) jaxbUnmarshaller.unmarshal(new URL("http://" + jTextField1.getText() + ":" + jTextField2.getText() + "/xml"));
 
+            String results = new String();
+            for (Table t : stats.getTables().getTable()) {
+                results = results.concat(t.getTablename() + "\r\n");
+            }
+            jEditorPane1.setText(results);
         } catch (Exception err) {
             System.out.println(err.getMessage());
         }
@@ -159,7 +178,9 @@ public class NewAccumuloDialog extends javax.swing.JDialog {
     private javax.swing.JButton jButton1;
     private javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 }

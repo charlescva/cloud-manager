@@ -20,12 +20,30 @@ import tamriel.cyrodiil.champion.thor.bo.NimbusServerNode;
  */
 public class NewServerDialog extends javax.swing.JDialog {
 
+    private NimbusServerNode nsn = null;
+    
     /** Creates new form NewServerDialog */
     public NewServerDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        
         initComponents();
     }
 
+    public NewServerDialog(java.awt.Frame parent, boolean modal, NimbusServerNode nimbusNode) {
+        super(parent, modal);
+        nsn = nimbusNode;
+        initComponents();
+        
+        //populate fields if not null
+        if (nsn!=null) {
+            DisplayNameTextField.setText(nsn.getName());
+            PasswordField.setText(nsn.getPassword());
+            UsernameTextField.setText(nsn.getUsername());
+            NimbusHostTextField.setText(nsn.getHost());
+            UiPortTextField.setText(new Integer(nsn.getUi_port()).toString());
+        }
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is

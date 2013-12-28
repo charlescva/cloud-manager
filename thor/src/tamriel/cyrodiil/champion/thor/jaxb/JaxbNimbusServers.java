@@ -55,10 +55,10 @@ import javax.xml.bind.annotation.XmlValue;
     "server"
 })
 @XmlRootElement(name = "Servers")
-public class Servers {
+public class JaxbNimbusServers {
 
     @XmlElement(name = "Server")
-    protected List<Servers.Server> server;
+    protected List<JaxbNimbusServers.JaxbNimbusServer> server;
 
     /**
      * Gets the value of the server property.
@@ -78,13 +78,13 @@ public class Servers {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Servers.Server }
+     * {@link Servers.NimbusServer }
      * 
      * 
      */
-    public List<Servers.Server> getServer() {
+    public List<JaxbNimbusServers.JaxbNimbusServer> getServer() {
         if (server == null) {
-            server = new ArrayList<Servers.Server>();
+            server = new ArrayList<JaxbNimbusServers.JaxbNimbusServer>();
         }
         return this.server;
     }
@@ -115,7 +115,7 @@ public class Servers {
     @XmlType(name = "", propOrder = {
         "value"
     })
-    public static class Server {
+    public static class JaxbNimbusServer {
 
         @XmlValue
         protected String value;
