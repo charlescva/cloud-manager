@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Servers>
-    <Server displayName="New Nimbus Server" hostName="localhost" uiport="8080" username="root" password="plaintext :("></Server>
-    <Server displayName="1620-Storm.bi2r.leidos.com" hostName="1620-Storm.bi2r.leidos.com" uiport="8080" username="root" password="toor"/>
-</Servers>

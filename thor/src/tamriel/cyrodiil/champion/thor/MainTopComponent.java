@@ -44,7 +44,7 @@ public final class MainTopComponent extends TopComponent {
     private JAXBContext jaxbContext;
     private Unmarshaller jaxbUnmarshaller;
     private Marshaller jaxbMarshaller;
-    private File xmlFile = new File("NimbusServers.xml");
+    private File xmlFile = new File("settings.xml");
     private JaxbNimbusServers _servers;
 
     public MainTopComponent() {
