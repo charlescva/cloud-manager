@@ -13,12 +13,12 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import org.openide.windows.WindowManager;
 import tamriel.cyrodiil.champion.thor.MainTopComponent;
-import tamriel.cyrodiil.champion.thor.jaxb.Servers;
-import tamriel.cyrodiil.champion.thor.service.CommonUtils;
+import tamriel.cyrodiil.champion.thor.jaxb.JaxbServers;
 import tamriel.cyrodiil.champion.thor.service.FileSendSwingWorker;
 
 /**
@@ -38,7 +38,7 @@ public class SendFileDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
 
-        for (Servers.Server s : tc.getServers().getServer()) {
+        for (JaxbServers.Server s : tc.getServers().getServer()) {
             ServerComboBox.addItem(s.getHostname());
         }
 
@@ -161,7 +161,14 @@ public class SendFileDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BrowseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BrowseButtonActionPerformed
-        CommonUtils.ChooseFile(SendFileDialog.this, SourceFileTextField);
+        final JFileChooser fc = new JFileChooser();
+        int returnVal = fc.showOpenDialog(SendFileDialog.this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            SourceFileTextField.setText(file.getAbsolutePath());
+        } else {
+            //do nothing.
+        }
     }//GEN-LAST:event_BrowseButtonActionPerformed
 
     private void CancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelButtonActionPerformed
@@ -189,8 +196,15 @@ public class SendFileDialog extends javax.swing.JDialog {
                 String selectedHost = ServerComboBox.getSelectedItem().toString();
                 Connection conn = new Connection(selectedHost);
                 FileSendSwingWorker fssw = new FileSendSwingWorker(conn);
+                fssw.setServer(selectedHost);
                 //server connection info/
-                
+                for(JaxbServers.Server s: tc.getServers().getServer()) {
+                    if(s.getHostname().equals(ServerComboBox.getSelectedItem().toString())) {
+                        fssw.setUsername(s.getUsername());
+                        fssw.setPassword(s.getPassword());
+                        
+                    }
+                }
                 
                 
                 //Transfer Info.

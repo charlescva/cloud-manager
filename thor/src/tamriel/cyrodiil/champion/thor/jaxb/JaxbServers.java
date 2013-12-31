@@ -81,10 +81,10 @@ import javax.xml.bind.annotation.XmlValue;
     "server"
 })
 @XmlRootElement(name = "Servers")
-public class Servers {
+public class JaxbServers {
 
     @XmlElement(name = "Server")
-    protected List<Servers.Server> server;
+    protected List<JaxbServers.Server> server;
 
     /**
      * Gets the value of the server property.
@@ -108,9 +108,9 @@ public class Servers {
      * 
      * 
      */
-    public List<Servers.Server> getServer() {
+    public List<JaxbServers.Server> getServer() {
         if (server == null) {
-            server = new ArrayList<Servers.Server>();
+            server = new ArrayList<JaxbServers.Server>();
         }
         return this.server;
     }
@@ -170,9 +170,9 @@ public class Servers {
     public static class Server {
 
         @XmlElement(name = "NimbusServer")
-        protected Servers.Server.NimbusServer nimbusServer;
+        protected JaxbServers.Server.NimbusServer nimbusServer;
         @XmlElement(name = "AccumuloServer")
-        protected Servers.Server.AccumuloServer accumuloServer;
+        protected JaxbServers.Server.AccumuloServer accumuloServer;
         @XmlAttribute(name = "OperatingSystem")
         @XmlSchemaType(name = "anySimpleType")
         protected String operatingSystem;
@@ -197,7 +197,7 @@ public class Servers {
          *     {@link Servers.Server.NimbusServer }
          *     
          */
-        public Servers.Server.NimbusServer getNimbusServer() {
+        public JaxbServers.Server.NimbusServer getNimbusServer() {
             return nimbusServer;
         }
 
@@ -209,7 +209,7 @@ public class Servers {
          *     {@link Servers.Server.NimbusServer }
          *     
          */
-        public void setNimbusServer(Servers.Server.NimbusServer value) {
+        public void setNimbusServer(JaxbServers.Server.NimbusServer value) {
             this.nimbusServer = value;
         }
 
@@ -221,7 +221,7 @@ public class Servers {
          *     {@link Servers.Server.AccumuloServer }
          *     
          */
-        public Servers.Server.AccumuloServer getAccumuloServer() {
+        public JaxbServers.Server.AccumuloServer getAccumuloServer() {
             return accumuloServer;
         }
 
@@ -233,7 +233,7 @@ public class Servers {
          *     {@link Servers.Server.AccumuloServer }
          *     
          */
-        public void setAccumuloServer(Servers.Server.AccumuloServer value) {
+        public void setAccumuloServer(JaxbServers.Server.AccumuloServer value) {
             this.accumuloServer = value;
         }
 

@@ -19,6 +19,7 @@
 package tamriel.cyrodiil.champion.thor;
 
 import java.io.File;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -39,7 +40,7 @@ import tamriel.cyrodiil.champion.thor.bo.NimbusServerNode;
 import tamriel.cyrodiil.champion.thor.bo.Server;
 import tamriel.cyrodiil.champion.thor.bo.ServerTypes;
 import tamriel.cyrodiil.champion.thor.bo.ContextPopupClickListener;
-import tamriel.cyrodiil.champion.thor.jaxb.Servers;
+import tamriel.cyrodiil.champion.thor.jaxb.JaxbServers;
 
 /**
  * @author Charles Top component which displays the Jtree with server nodes.
@@ -64,9 +65,9 @@ public final class MainTopComponent extends TopComponent {
     private Unmarshaller jaxbUnmarshaller;
     private Marshaller jaxbMarshaller;
     private File xmlFile = new File("settings.xml");
-    private Servers _servers;
+    private JaxbServers _servers;
 
-    public Servers getServers() {
+    public JaxbServers getServers() {
         return _servers;
     }
 
@@ -75,20 +76,16 @@ public final class MainTopComponent extends TopComponent {
     public MainTopComponent() {
         initComponents();
         try {
-            jaxbServersContext = JAXBContext.newInstance(Servers.class);
+            jaxbServersContext = JAXBContext.newInstance(JaxbServers.class);
             jaxbUnmarshaller = jaxbServersContext.createUnmarshaller();
             jaxbMarshaller = jaxbServersContext.createMarshaller();
 
-            rootNode = new DefaultMutableTreeNode("Services");
-            stormsNode = new DefaultMutableTreeNode("Storm Nimbus Hosts");
-            accumulosNode = new DefaultMutableTreeNode("Accumulo Hosts");
-
             if (xmlFile.exists()) {
 
-                _servers = (Servers) jaxbUnmarshaller.unmarshal(xmlFile);
+                _servers = (JaxbServers) jaxbUnmarshaller.unmarshal(xmlFile);
             } else {
                 xmlFile.createNewFile();
-                _servers = new Servers();
+                _servers = new JaxbServers();
                 createSettingsFile();
             }
             loadServers();
@@ -185,9 +182,7 @@ public final class MainTopComponent extends TopComponent {
             }
         });
 
-        rootNode.add(stormsNode);
-        rootNode.add(accumulosNode);
-        jTree1.setModel(new DefaultTreeModel(rootNode));
+        
 
     }
 
@@ -209,7 +204,7 @@ public final class MainTopComponent extends TopComponent {
     }
 
     public void addServer(Server svr, boolean toXmlFile) {
-        
+
         if (svr.getServerType() == ServerTypes.ACCUMULO) {
             accumulosNode.add((AccumuloServerNode) svr);
         }
@@ -224,14 +219,23 @@ public final class MainTopComponent extends TopComponent {
 
     public void deleteServer(Server svr) {
         try {
-            for (Servers.Server a : _servers.getServer()) {
+            
+            List<JaxbServers.Server> s = _servers.getServer();
+
+            JaxbServers.Server b = null;
+            for (JaxbServers.Server a : s) {
                 if (a.getHostname().equals(svr.getHostname())
                         && a.getServerType().equals(svr.getServerType().toString())) {
-                    _servers.getServer().remove(a);
+                    b = a;
+                    break;
                 }
-                jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-                jaxbMarshaller.marshal(_servers, xmlFile);
+
             }
+
+            _servers.getServer().remove(b);
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            jaxbMarshaller.marshal(_servers, xmlFile);
+            loadServers();
         } catch (Exception err) {
             err.printStackTrace();
         }
@@ -253,7 +257,7 @@ public final class MainTopComponent extends TopComponent {
     private void saveServers(Server svr) {
 
         try {
-            Servers.Server jaxbServer = new Servers.Server();
+            JaxbServers.Server jaxbServer = new JaxbServers.Server();
 
             jaxbServer.setHostname(svr.getHostname());
             jaxbServer.setUsername(svr.getUsername());
@@ -264,7 +268,7 @@ public final class MainTopComponent extends TopComponent {
             if (svr.getServerType() == ServerTypes.NIMBUS) {
                 NimbusServerNode nsNode = (NimbusServerNode) svr;
                 jaxbServer.setServerType(ServerTypes.NIMBUS.toString());
-                Servers.Server.NimbusServer jaxbNS = new Servers.Server.NimbusServer();
+                JaxbServers.Server.NimbusServer jaxbNS = new JaxbServers.Server.NimbusServer();
                 jaxbNS.setDisplayName(nsNode.getDisplayName());
                 jaxbNS.setUiport(new Short(new Integer(nsNode.getUi_port()).toString()));
                 jaxbNS.setZookeepers(nsNode.getZookeeper());
@@ -274,7 +278,7 @@ public final class MainTopComponent extends TopComponent {
             if (svr.getServerType() == ServerTypes.ACCUMULO) {
                 AccumuloServerNode asNode = (AccumuloServerNode) svr;
                 jaxbServer.setServerType(ServerTypes.ACCUMULO.toString());
-                Servers.Server.AccumuloServer jaxbAS = new Servers.Server.AccumuloServer();
+                JaxbServers.Server.AccumuloServer jaxbAS = new JaxbServers.Server.AccumuloServer();
                 jaxbAS.setDbAccount(asNode.getDbAccount());
                 jaxbAS.setDbPassword(asNode.getDbPassword());
                 jaxbAS.setMonitorPort(new Integer(asNode.getUi_port()).toString());
@@ -298,16 +302,21 @@ public final class MainTopComponent extends TopComponent {
     private void loadServers() {
 
         try {
-
+            rootNode = new DefaultMutableTreeNode("Services");
+            stormsNode = new DefaultMutableTreeNode("Storm Nimbus Hosts");
+            accumulosNode = new DefaultMutableTreeNode("Accumulo Hosts");
             if (xmlFile.exists()) {
                 //load the servers?
-                for (Servers.Server s : _servers.getServer()) {
+                for (JaxbServers.Server s : _servers.getServer()) {
 
                     addServer(parseJaxbServer(s), false);
                 }
             } else {
                 xmlFile.createNewFile();
             }
+            rootNode.add(stormsNode);
+            rootNode.add(accumulosNode);
+        jTree1.setModel(new DefaultTreeModel(rootNode));
 
         } catch (Exception err) {
         }
@@ -315,41 +324,38 @@ public final class MainTopComponent extends TopComponent {
     }
 
     // converts jaxb nimbus server to JTreeNode.
-    private Server parseJaxbServer(Servers.Server svr) {
-        
-        if(svr.getServerType().equals(ServerTypes.NIMBUS.toString())) {
-        NimbusServerNode nsNode = new NimbusServerNode();
-        Servers.Server.NimbusServer s = svr.getNimbusServer();
-        //Server fields
-        nsNode.setHostname(svr.getHostname());
-        nsNode.setUsername(svr.getUsername());
-        nsNode.setPassword(svr.getPassword());
-        nsNode.setServerType(ServerTypes.NIMBUS);
-        //nimbus fields
-        nsNode.setUi_port(s.getUiport());
-        nsNode.setDisplayName(s.getDisplayName());
-        nsNode.setZookeeper(s.getZookeepers());
-        return nsNode;
+    private Server parseJaxbServer(JaxbServers.Server svr) {
+
+        if (svr.getServerType().equals(ServerTypes.NIMBUS.toString())) {
+            NimbusServerNode nsNode = new NimbusServerNode();
+            JaxbServers.Server.NimbusServer s = svr.getNimbusServer();
+            //Server fields
+            nsNode.setHostname(svr.getHostname());
+            nsNode.setUsername(svr.getUsername());
+            nsNode.setPassword(svr.getPassword());
+            nsNode.setServerType(ServerTypes.NIMBUS);
+            //nimbus fields
+            nsNode.setUi_port(s.getUiport());
+            nsNode.setDisplayName(s.getDisplayName());
+            nsNode.setZookeeper(s.getZookeepers());
+            return nsNode;
         }
-        if(svr.getServerType().equals(ServerTypes.ACCUMULO.toString())) {
-        AccumuloServerNode asNode = new AccumuloServerNode();
-        Servers.Server.AccumuloServer s = svr.getAccumuloServer();
-        //Server fields
-        asNode.setHostname(svr.getHostname());
-        asNode.setUsername(svr.getUsername());
-        asNode.setPassword(svr.getPassword());
-        asNode.setDisplayName(svr.getHostname());
-        asNode.setServerType(ServerTypes.ACCUMULO);
-        //nimbus fields
-        asNode.setUi_port(new Integer(s.getMonitorPort()));
-        asNode.setZookeeper(s.getZookeepers());
-        return asNode;
-        }
-        
-        else {
+        if (svr.getServerType().equals(ServerTypes.ACCUMULO.toString())) {
+            AccumuloServerNode asNode = new AccumuloServerNode();
+            JaxbServers.Server.AccumuloServer s = svr.getAccumuloServer();
+            //Server fields
+            asNode.setHostname(svr.getHostname());
+            asNode.setUsername(svr.getUsername());
+            asNode.setPassword(svr.getPassword());
+            asNode.setDisplayName(svr.getHostname());
+            asNode.setServerType(ServerTypes.ACCUMULO);
+            //nimbus fields
+            asNode.setUi_port(new Integer(s.getMonitorPort()));
+            asNode.setZookeeper(s.getZookeepers());
+            return asNode;
+        } else {
             return null;
         }
     }
 
-    
 }

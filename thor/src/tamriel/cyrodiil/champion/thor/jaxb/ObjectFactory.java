@@ -40,32 +40,32 @@ public class ObjectFactory {
      * Create an instance of {@link Servers.Server }
      * 
      */
-    public Servers.Server createServersServer() {
-        return new Servers.Server();
+    public JaxbServers.Server createServersServer() {
+        return new JaxbServers.Server();
     }
 
     /**
      * Create an instance of {@link Servers.Server.NimbusServer }
      * 
      */
-    public Servers.Server.NimbusServer createServersServerNimbusServer() {
-        return new Servers.Server.NimbusServer();
+    public JaxbServers.Server.NimbusServer createServersServerNimbusServer() {
+        return new JaxbServers.Server.NimbusServer();
     }
 
     /**
-     * Create an instance of {@link Servers }
+     * Create an instance of {@link JaxbServers }
      * 
      */
-    public Servers createServers() {
-        return new Servers();
+    public JaxbServers createServers() {
+        return new JaxbServers();
     }
 
     /**
      * Create an instance of {@link Servers.Server.AccumuloServer }
      * 
      */
-    public Servers.Server.AccumuloServer createServersServerAccumuloServer() {
-        return new Servers.Server.AccumuloServer();
+    public JaxbServers.Server.AccumuloServer createServersServerAccumuloServer() {
+        return new JaxbServers.Server.AccumuloServer();
     }
 
 }

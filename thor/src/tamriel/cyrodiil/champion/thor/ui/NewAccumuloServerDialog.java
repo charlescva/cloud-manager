@@ -83,6 +83,11 @@ public class NewAccumuloServerDialog extends javax.swing.JDialog {
         });
 
         org.openide.awt.Mnemonics.setLocalizedText(jButton3, org.openide.util.NbBundle.getMessage(NewAccumuloServerDialog.class, "NewAccumuloServerDialog.jButton3.text")); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel6, org.openide.util.NbBundle.getMessage(NewAccumuloServerDialog.class, "NewAccumuloServerDialog.jLabel6.text")); // NOI18N
 
@@ -228,6 +233,10 @@ public class NewAccumuloServerDialog extends javax.swing.JDialog {
         this.dispose();
 
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     private JAXBContext jaxbContext;
     private Unmarshaller jaxbUnmarshaller;
