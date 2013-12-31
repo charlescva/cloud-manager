@@ -6,7 +6,11 @@
 
 package tamriel.cyrodiil.champion.thor.service;
 
+import java.awt.Component;
+import java.io.File;
 import java.io.StringWriter;
+import javax.swing.JFileChooser;
+import javax.swing.JTextField;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -37,6 +41,18 @@ public class CommonUtils {
         catch (Exception err) {
             err.printStackTrace();
             return null;
+        }
+    }
+    
+    
+    public static void ChooseFile(Component parent, JTextField targetField) {
+        final JFileChooser fc = new JFileChooser();
+        int returnVal = fc.showOpenDialog(parent);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            targetField.setText(file.getAbsolutePath());
+        } else {
+            //do nothing.
         }
     }
     

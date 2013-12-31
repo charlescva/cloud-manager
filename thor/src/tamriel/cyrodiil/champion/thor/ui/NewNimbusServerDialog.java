@@ -13,6 +13,7 @@ package tamriel.cyrodiil.champion.thor.ui;
 import org.openide.windows.WindowManager;
 import tamriel.cyrodiil.champion.thor.MainTopComponent;
 import tamriel.cyrodiil.champion.thor.bo.NimbusServerNode;
+import tamriel.cyrodiil.champion.thor.bo.ServerTypes;
 
 /**
  *
@@ -36,11 +37,12 @@ public class NewNimbusServerDialog extends javax.swing.JDialog {
         
         //populate fields if not null
         if (nsn!=null) {
-            DisplayNameTextField.setText(nsn.getName());
+            DisplayNameTextField.setText(nsn.getDisplayName());
             PasswordField.setText(nsn.getPassword());
             UsernameTextField.setText(nsn.getUsername());
-            NimbusHostTextField.setText(nsn.getHost());
+            NimbusHostTextField.setText(nsn.getHostname());
             UiPortTextField.setText(new Integer(nsn.getUi_port()).toString());
+            
         }
     }
     
@@ -172,11 +174,12 @@ public class NewNimbusServerDialog extends javax.swing.JDialog {
         MainTopComponent tc = (MainTopComponent) WindowManager.getDefault().findTopComponent("MainTopComponent");
         
         NimbusServerNode nsNode = new NimbusServerNode();
-        nsNode.setHost(NimbusHostTextField.getText());
-        nsNode.setName(DisplayNameTextField.getText());
+        nsNode.setHostname(NimbusHostTextField.getText());
+        nsNode.setDisplayName(DisplayNameTextField.getText());
         nsNode.setUsername(UsernameTextField.getText());
         nsNode.setPassword(PasswordField.getText());
         nsNode.setUi_port(new Integer(UiPortTextField.getText()));
+        nsNode.setServerType(ServerTypes.NIMBUS);
         
         tc.addServer(nsNode, true);
         this.dispose();

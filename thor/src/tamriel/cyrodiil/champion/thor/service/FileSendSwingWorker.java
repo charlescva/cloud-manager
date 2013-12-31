@@ -48,16 +48,35 @@ import tamriel.cyrodiil.champion.thor.bo.NimbusServerNode;
  * 
  */
  
-public class SCPTopologyDeployer extends SwingWorker<String, Integer> {
+public class FileSendSwingWorker extends SwingWorker<String, Integer> {
 
     private Connection conn;
     private Double transprogress = 0.0;
-    private NimbusServerNode associatedNode;
+    private String server;
+    private String username;
+    private String password;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
     private ConnectionMonitor cmon;
     private String StagingFolder;
     private String localFile;
     private String remoteDir;
     private String cmd;
+    
     
     public void setRemoteDir(String destFolder) {
         remoteDir = destFolder;
@@ -68,8 +87,8 @@ public class SCPTopologyDeployer extends SwingWorker<String, Integer> {
     public void setStagingFolder(String sfolder) {
         StagingFolder = sfolder;
     }
-    public void setAssociatedNode(NimbusServerNode nsNode) {
-        associatedNode = nsNode;
+    public void setServer(String hostname) {
+        server = hostname;
     }
     public void setDeployCommand(String dcmd) {
         cmd = dcmd;
@@ -80,9 +99,9 @@ public class SCPTopologyDeployer extends SwingWorker<String, Integer> {
     protected String doInBackground() {
         
         try {
-        conn = new Connection(associatedNode.getHostname());
+        conn = new Connection(server);
         conn.connect();
-        boolean isAuthenticated = conn.authenticateWithPassword(associatedNode.getUsername(), associatedNode.getPassword());
+        boolean isAuthenticated = conn.authenticateWithPassword(username, password);
         if (isAuthenticated == false) {
             throw new IOException("Authentication failed.");
         } else {
@@ -97,10 +116,9 @@ public class SCPTopologyDeployer extends SwingWorker<String, Integer> {
         
         ssh("mkdir " + remoteDir);
         put(localFile, remoteDir);
-        StringBuilder response = new StringBuilder("Deployment Omitted.");
+        StringBuilder response = new StringBuilder("File Sent.");
         
-        response = ssh("su -c \"" + cmd + "\" - " + associatedNode.getUsername());
-        firePropertyChange("stormreport", "", response.toString());
+        firePropertyChange("sendreport", "", response.toString());
         
         return response.toString();
         } catch (Exception e) {
@@ -135,7 +153,7 @@ public class SCPTopologyDeployer extends SwingWorker<String, Integer> {
         String filename;
     }
 
-    public SCPTopologyDeployer(Connection conn) {
+    public FileSendSwingWorker(Connection conn) {
         if (conn == null) {
             throw new IllegalArgumentException("Cannot accept null argument!");
         }

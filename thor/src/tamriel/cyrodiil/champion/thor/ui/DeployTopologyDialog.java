@@ -172,7 +172,7 @@ public class DeployTopologyDialog extends javax.swing.JDialog {
                 String cmd = "storm jar " + StagingFolder + "/" + FileName + " "
                         + classTextField.getText() + " "
                         + ArgsTextArea.getText();
-                Connection conn = new Connection(associatedNode.getHost());
+                Connection conn = new Connection(associatedNode.getHostname());
                 SCPTopologyDeployer scptd = new SCPTopologyDeployer(conn);
                 scptd.setAssociatedNode(associatedNode);
                 scptd.setDeployCommand(cmd);

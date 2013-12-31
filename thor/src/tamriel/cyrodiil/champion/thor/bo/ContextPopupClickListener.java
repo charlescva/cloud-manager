@@ -11,9 +11,18 @@ import java.awt.event.MouseEvent;
  *
  * @author Charles
  */
-public class nsPopupClickListener extends MouseAdapter {
+public class ContextPopupClickListener extends MouseAdapter {
 
     private NimbusServerNode _nsNode;
+
+    public AccumuloServerNode getAsNode() {
+        return _asNode;
+    }
+
+    public void setAsNode(AccumuloServerNode _asNode) {
+        this._asNode = _asNode;
+    }
+    private AccumuloServerNode _asNode;
 
     public void setNsNode(NimbusServerNode nsNode) {
         _nsNode = nsNode;
@@ -36,9 +45,11 @@ public class nsPopupClickListener extends MouseAdapter {
     private void doPop(MouseEvent e) {
         if (_nsNode != null) {
             
-            String triggerNode = e.getComponent().getClass().toString();
-            
             NimbusServerPopupMenu menu = new NimbusServerPopupMenu(_nsNode);
+            menu.show(e.getComponent(), e.getX(), e.getY());
+        }
+        if (_asNode != null) {
+            AccumuloServerPopupMenu menu = new AccumuloServerPopupMenu(_asNode);
             menu.show(e.getComponent(), e.getX(), e.getY());
         }
     }

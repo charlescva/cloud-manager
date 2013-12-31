@@ -11,34 +11,44 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import org.openide.windows.WindowManager;
 import tamriel.cyrodiil.champion.thor.MainTopComponent;
-import tamriel.cyrodiil.champion.thor.ui.DeployTopologyDialog;
-import tamriel.cyrodiil.champion.thor.ui.NewNimbusServerDialog;
+import tamriel.cyrodiil.champion.thor.ui.FetchAccumuloTablesDialog;
+import tamriel.cyrodiil.champion.thor.ui.NewAccumuloServerDialog;
 
 /**
  *
  * @author Charles
  */
-public class NimbusServerPopupMenu extends JPopupMenu {
+public class AccumuloServerPopupMenu extends JPopupMenu {
 
     private JMenuItem editServer = new JMenuItem("Edit...");
+    private JMenuItem fetchTableList = new JMenuItem("Fetch Table List...");
     private JMenuItem navigateToUi = new JMenuItem("Open UI in Browser");
-    private JMenuItem deployTopology = new JMenuItem("Deploy Topology...");
     private JMenuItem deleteServer = new JMenuItem("Remove Server");
-    private NimbusServerNode associatedNode;
+    private AccumuloServerNode associatedNode;
 
     private final MainTopComponent tc = (MainTopComponent) WindowManager.getDefault().findTopComponent("MainTopComponent");
         
     
-    public NimbusServerPopupMenu(NimbusServerNode nsNode) {
+    public AccumuloServerPopupMenu(AccumuloServerNode nsNode) {
 
         associatedNode = nsNode;
+        
+        fetchTableList.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+                FetchAccumuloTablesDialog fatd = new FetchAccumuloTablesDialog(null, true);
+                fatd.SetTextBoxes(associatedNode.getHostname(), new Integer(associatedNode.getUi_port()).toString());
+                fatd.setVisible(true);
+            }
+        });
         
         editServer.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 
-                NewNimbusServerDialog nds = new NewNimbusServerDialog(null, true, associatedNode);
+                NewAccumuloServerDialog nds = new NewAccumuloServerDialog(null, true, associatedNode);
                 
                 nds.setVisible(true);
             }
@@ -67,25 +77,10 @@ public class NimbusServerPopupMenu extends JPopupMenu {
             }
         });
 
-        deployTopology.addActionListener(new ActionListener() {
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    DeployTopologyDialog dtd = new DeployTopologyDialog(null, true);
-                    dtd.setNimbus(associatedNode);
-
-                    dtd.setVisible(true);
-
-                } catch (Exception err) {
-                    throw new UnsupportedOperationException(err.getMessage());
-                }
-            }
-
-        });
 
         add(navigateToUi);
-        add(deployTopology);
+        add(fetchTableList);
         add(deleteServer);
         add(editServer);
     }

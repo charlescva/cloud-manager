@@ -173,6 +173,11 @@ public class FetchAccumuloTablesDialog extends javax.swing.JDialog {
             }
         });
     }
+    
+    public void SetTextBoxes(String host, String port) {
+        jTextField1.setText(host);
+        jTextField2.setText(port);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

@@ -1,28 +1,36 @@
-<!-- edited with XMLSpy v2012 rel. 2 (x64) (http://www.altova.com) by Charles (SAIC) -->
+<!-- edited with XMLSpy v2012 rel. 2 sp1 (x64) (http://www.altova.com) by Charles Ott (SAIC) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="Servers">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="NimbusServer" minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="Server" minOccurs="0" maxOccurs="unbounded">
 					<xs:complexType>
-						<xs:simpleContent>
-							<xs:extension base="xs:string">
-								<xs:attribute name="displayName" type="xs:string" use="optional"/>
-								<xs:attribute name="hostName" type="xs:string" use="optional"/>
-								<xs:attribute name="uiport" type="xs:short" use="optional"/>
-								<xs:attribute name="username" type="xs:string" use="optional"/>
-								<xs:attribute name="password" type="xs:string" use="optional"/>
-							</xs:extension>
-						</xs:simpleContent>
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="AccumuloServer" minOccurs="0" maxOccurs="unbounded">
-					<xs:complexType>
-						<xs:attribute name="hostName"/>
-						<xs:attribute name="monitorPort"/>
-						<xs:attribute name="dbAccount"/>
-						<xs:attribute name="dbPassword"/>
-						<xs:attribute name="zookeepers"/>
+						<xs:choice>
+							<xs:element name="NimbusServer" minOccurs="0">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="displayName" type="xs:string" use="optional"/>
+											<xs:attribute name="uiport" type="xs:short" use="optional"/>
+											<xs:attribute name="zookeepers"/>
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="AccumuloServer" minOccurs="0">
+								<xs:complexType>
+									<xs:attribute name="monitorPort"/>
+									<xs:attribute name="dbAccount"/>
+									<xs:attribute name="dbPassword"/>
+									<xs:attribute name="zookeepers"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:choice>
+						<xs:attribute name="OperatingSystem"/>
+						<xs:attribute name="ServerType" use="required"/>
+						<xs:attribute name="hostname" use="required"/>
+						<xs:attribute name="username" use="required"/>
+						<xs:attribute name="password" use="required"/>
 					</xs:complexType>
 				</xs:element>
 			</xs:sequence>

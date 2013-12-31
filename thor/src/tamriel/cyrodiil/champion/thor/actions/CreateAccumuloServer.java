@@ -11,7 +11,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
-import tamriel.cyrodiil.champion.thor.ui.NewAccumuloDialog;
+import tamriel.cyrodiil.champion.thor.ui.NewAccumuloServerDialog;
 
 @ActionID(
         category = "File",
@@ -28,7 +28,7 @@ public final class CreateAccumuloServer implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        NewAccumuloDialog nda = new NewAccumuloDialog(null, true);
+        NewAccumuloServerDialog nda = new NewAccumuloServerDialog(null, true);
         nda.setVisible(true);
     }
 }
