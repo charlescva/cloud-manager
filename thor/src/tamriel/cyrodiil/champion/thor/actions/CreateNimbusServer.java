@@ -4,7 +4,7 @@
  */
 package tamriel.cyrodiil.champion.thor.actions;
 
-import tamriel.cyrodiil.champion.thor.ui.NewServerDialog;
+import tamriel.cyrodiil.champion.thor.ui.NewNimbusServerDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionRegistration;
@@ -20,12 +20,12 @@ displayName = "#CTL_CreateServerEntry")
 @ActionReferences({
     @ActionReference(path = "Menu/File", position = 1300)
 })
-@Messages("CTL_CreateServerEntry=Add Nimbus Server")
+@Messages("CTL_CreateServerEntry=Add Nimbus Server...")
 public final class CreateNimbusServer implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         
-        NewServerDialog nds = new NewServerDialog(null, true);
+        NewNimbusServerDialog nds = new NewNimbusServerDialog(null, true);
         nds.setVisible(true);
         
         

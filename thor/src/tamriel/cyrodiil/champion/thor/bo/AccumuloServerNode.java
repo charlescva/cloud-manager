@@ -15,7 +15,7 @@ public class AccumuloServerNode extends DefaultMutableTreeNode {
     private String name;
     private String host;
     private String zookeeper;
-
+    
     public String getZookeeper() {
         return zookeeper;
     }

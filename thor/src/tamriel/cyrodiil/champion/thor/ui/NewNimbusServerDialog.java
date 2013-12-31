@@ -18,18 +18,18 @@ import tamriel.cyrodiil.champion.thor.bo.NimbusServerNode;
  *
  * @author Charles
  */
-public class NewServerDialog extends javax.swing.JDialog {
+public class NewNimbusServerDialog extends javax.swing.JDialog {
 
     private NimbusServerNode nsn = null;
     
     /** Creates new form NewServerDialog */
-    public NewServerDialog(java.awt.Frame parent, boolean modal) {
+    public NewNimbusServerDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         
         initComponents();
     }
 
-    public NewServerDialog(java.awt.Frame parent, boolean modal, NimbusServerNode nimbusNode) {
+    public NewNimbusServerDialog(java.awt.Frame parent, boolean modal, NimbusServerNode nimbusNode) {
         super(parent, modal);
         nsn = nimbusNode;
         initComponents();
@@ -69,39 +69,39 @@ public class NewServerDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setLocationByPlatform(true);
 
-        jLabel1.setText(org.openide.util.NbBundle.getMessage(NewServerDialog.class, "NewServerDialog.jLabel1.text")); // NOI18N
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(NewNimbusServerDialog.class, "NewNimbusServerDialog.jLabel1.text")); // NOI18N
 
-        NimbusHostTextField.setText(org.openide.util.NbBundle.getMessage(NewServerDialog.class, "NewServerDialog.NimbusHostTextField.text")); // NOI18N
+        NimbusHostTextField.setText(org.openide.util.NbBundle.getMessage(NewNimbusServerDialog.class, "NewNimbusServerDialog.NimbusHostTextField.text")); // NOI18N
 
-        jLabel2.setText(org.openide.util.NbBundle.getMessage(NewServerDialog.class, "NewServerDialog.jLabel2.text")); // NOI18N
+        jLabel2.setText(org.openide.util.NbBundle.getMessage(NewNimbusServerDialog.class, "NewNimbusServerDialog.jLabel2.text")); // NOI18N
 
-        UsernameTextField.setText(org.openide.util.NbBundle.getMessage(NewServerDialog.class, "NewServerDialog.UsernameTextField.text")); // NOI18N
+        UsernameTextField.setText(org.openide.util.NbBundle.getMessage(NewNimbusServerDialog.class, "NewNimbusServerDialog.UsernameTextField.text")); // NOI18N
 
-        jLabel3.setText(org.openide.util.NbBundle.getMessage(NewServerDialog.class, "NewServerDialog.jLabel3.text")); // NOI18N
+        jLabel3.setText(org.openide.util.NbBundle.getMessage(NewNimbusServerDialog.class, "NewNimbusServerDialog.jLabel3.text")); // NOI18N
 
-        jButton1.setText(org.openide.util.NbBundle.getMessage(NewServerDialog.class, "NewServerDialog.jButton1.text")); // NOI18N
+        jButton1.setText(org.openide.util.NbBundle.getMessage(NewNimbusServerDialog.class, "NewNimbusServerDialog.jButton1.text")); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText(org.openide.util.NbBundle.getMessage(NewServerDialog.class, "NewServerDialog.jButton2.text")); // NOI18N
+        jButton2.setText(org.openide.util.NbBundle.getMessage(NewNimbusServerDialog.class, "NewNimbusServerDialog.jButton2.text")); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
 
-        jLabel4.setText(org.openide.util.NbBundle.getMessage(NewServerDialog.class, "NewServerDialog.jLabel4.text")); // NOI18N
+        jLabel4.setText(org.openide.util.NbBundle.getMessage(NewNimbusServerDialog.class, "NewNimbusServerDialog.jLabel4.text")); // NOI18N
 
-        DisplayNameTextField.setText(org.openide.util.NbBundle.getMessage(NewServerDialog.class, "NewServerDialog.DisplayNameTextField.text")); // NOI18N
+        DisplayNameTextField.setText(org.openide.util.NbBundle.getMessage(NewNimbusServerDialog.class, "NewNimbusServerDialog.DisplayNameTextField.text")); // NOI18N
 
-        jLabel5.setText(org.openide.util.NbBundle.getMessage(NewServerDialog.class, "NewServerDialog.jLabel5.text")); // NOI18N
+        jLabel5.setText(org.openide.util.NbBundle.getMessage(NewNimbusServerDialog.class, "NewNimbusServerDialog.jLabel5.text")); // NOI18N
 
-        UiPortTextField.setText(org.openide.util.NbBundle.getMessage(NewServerDialog.class, "NewServerDialog.UiPortTextField.text")); // NOI18N
+        UiPortTextField.setText(org.openide.util.NbBundle.getMessage(NewNimbusServerDialog.class, "NewNimbusServerDialog.UiPortTextField.text")); // NOI18N
 
-        PasswordField.setText(org.openide.util.NbBundle.getMessage(NewServerDialog.class, "NewServerDialog.PasswordField.text")); // NOI18N
+        PasswordField.setText(org.openide.util.NbBundle.getMessage(NewNimbusServerDialog.class, "NewNimbusServerDialog.PasswordField.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -201,13 +201,13 @@ public class NewServerDialog extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewServerDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewNimbusServerDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewServerDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewNimbusServerDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewServerDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewNimbusServerDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewServerDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewNimbusServerDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -215,7 +215,7 @@ public class NewServerDialog extends javax.swing.JDialog {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                NewServerDialog dialog = new NewServerDialog(new javax.swing.JFrame(), true);
+                NewNimbusServerDialog dialog = new NewNimbusServerDialog(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 
                     @Override

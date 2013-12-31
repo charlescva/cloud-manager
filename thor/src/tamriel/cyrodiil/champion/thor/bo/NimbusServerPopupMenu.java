@@ -12,7 +12,7 @@ import javax.swing.JPopupMenu;
 import org.openide.windows.WindowManager;
 import tamriel.cyrodiil.champion.thor.MainTopComponent;
 import tamriel.cyrodiil.champion.thor.ui.DeployTopologyDialog;
-import tamriel.cyrodiil.champion.thor.ui.NewServerDialog;
+import tamriel.cyrodiil.champion.thor.ui.NewNimbusServerDialog;
 
 /**
  *
@@ -38,7 +38,7 @@ public class NimbusServerPopupMenu extends JPopupMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 
-                NewServerDialog nds = new NewServerDialog(null, true, associatedNode);
+                NewNimbusServerDialog nds = new NewNimbusServerDialog(null, true, associatedNode);
                 
                 nds.setVisible(true);
             }

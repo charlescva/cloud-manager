@@ -19,10 +19,10 @@ import org.openide.windows.TopComponent;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import tamriel.cyrodiil.champion.thor.bo.AccumuloServerNode;
 import tamriel.cyrodiil.champion.thor.bo.NimbusServerNode;
 import tamriel.cyrodiil.champion.thor.bo.nsPopupClickListener;
-import tamriel.cyrodiil.champion.thor.jaxb.JaxbNimbusServers;
-import tamriel.cyrodiil.champion.thor.jaxb.JaxbNimbusServers.JaxbNimbusServer;
+import tamriel.cyrodiil.champion.thor.jaxb.Servers;
 
 /**
  * Top component which displays something.
@@ -39,29 +39,34 @@ import tamriel.cyrodiil.champion.thor.jaxb.JaxbNimbusServers.JaxbNimbusServer;
         preferredID = "MainTopComponent")
 public final class MainTopComponent extends TopComponent {
 
-    private DefaultMutableTreeNode top;
+    private DefaultMutableTreeNode rootNode;
+    private DefaultMutableTreeNode stormsNode;
+    private DefaultMutableTreeNode accumulosNode;
     static nsPopupClickListener popmenulistener = new nsPopupClickListener();
-    private JAXBContext jaxbContext;
+    private JAXBContext jaxbServersContext;
     private Unmarshaller jaxbUnmarshaller;
     private Marshaller jaxbMarshaller;
     private File xmlFile = new File("settings.xml");
-    private JaxbNimbusServers _servers;
+    private Servers _servers;
 
     public MainTopComponent() {
         initComponents();
         try {
-            jaxbContext = JAXBContext.newInstance(JaxbNimbusServers.class);
-            jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            jaxbMarshaller = jaxbContext.createMarshaller();
+            jaxbServersContext = JAXBContext.newInstance(Servers.class);
+            jaxbUnmarshaller = jaxbServersContext.createUnmarshaller();
+            jaxbMarshaller = jaxbServersContext.createMarshaller();
 
-            top = new DefaultMutableTreeNode("Storms");
+            rootNode = new DefaultMutableTreeNode("Services");
+            stormsNode = new DefaultMutableTreeNode("Storm Nimbus Hosts");
+            accumulosNode = new DefaultMutableTreeNode("Accumulo Hosts");
+
             if (xmlFile.exists()) {
 
-                _servers = (JaxbNimbusServers) jaxbUnmarshaller.unmarshal(xmlFile);
+                _servers = (Servers) jaxbUnmarshaller.unmarshal(xmlFile);
             } else {
                 xmlFile.createNewFile();
-                _servers = new JaxbNimbusServers();
-                saveNimbusServers();
+                _servers = new Servers();
+                saveServers();
             }
             loadServers();
 
@@ -144,7 +149,9 @@ public final class MainTopComponent extends TopComponent {
             }
         });
 
-        jTree1.setModel(new DefaultTreeModel(top));
+        rootNode.add(stormsNode);
+        rootNode.add(accumulosNode);
+        jTree1.setModel(new DefaultTreeModel(rootNode));
 
     }
 
@@ -169,10 +176,21 @@ public final class MainTopComponent extends TopComponent {
     public void addServer(NimbusServerNode nsNode, boolean toXmlFile) {
 
         if (toXmlFile) {
-            saveNimbusServers(nsNode);
+            saveServers(nsNode);
         }
-        top.add(nsNode);
-        jTree1.setModel(new DefaultTreeModel(top));
+        stormsNode.add(nsNode);
+        jTree1.setModel(new DefaultTreeModel(rootNode));
+
+    }
+
+    //public method called by New Nimbus Server jDialog.
+    public void addServer(AccumuloServerNode nsNode, boolean toXmlFile) {
+
+        if (toXmlFile) {
+            saveServers(nsNode);
+        }
+        accumulosNode.add(nsNode);
+        jTree1.setModel(new DefaultTreeModel(rootNode));
 
     }
 
@@ -180,10 +198,10 @@ public final class MainTopComponent extends TopComponent {
     public void deleteServer(NimbusServerNode nsNode) {
 
         try {
-            for (JaxbNimbusServer s : _servers.getServer()) {
+            for (Servers.NimbusServer s : _servers.getNimbusServer()) {
                 if (s.getHostName().equals(nsNode.getHost())
                         && s.getUsername().equals(nsNode.getUsername())) {
-                    _servers.getServer().remove(s);
+                    _servers.getNimbusServer().remove(s);
                 }
                 jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
                 jaxbMarshaller.marshal(_servers, xmlFile);
@@ -192,11 +210,11 @@ public final class MainTopComponent extends TopComponent {
         } catch (Exception err) {
             err.printStackTrace();
         }
-        top.remove(nsNode);
-        jTree1.setModel(new DefaultTreeModel(top));
+        stormsNode.remove(nsNode);
+        jTree1.setModel(new DefaultTreeModel(rootNode));
     }
 
-    private void saveNimbusServers() {
+    private void saveServers() {
         try {
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             jaxbMarshaller.marshal(_servers, xmlFile);
@@ -208,17 +226,39 @@ public final class MainTopComponent extends TopComponent {
 
     //Uses JAXB
     //Saves an added Server to the XML file.
-    private void saveNimbusServers(NimbusServerNode nsNode) {
+    private void saveServers(Object anyNode) {
+
         try {
 
-            JaxbNimbusServer nsServer = new JaxbNimbusServer();
-            nsServer.setDisplayName(nsNode.getName());
-            nsServer.setHostName(nsNode.getHost());
-            nsServer.setUsername(nsNode.getUsername());
-            nsServer.setPassword(String.valueOf(nsNode.getPassword()));
-            nsServer.setUiport((short) nsNode.getUi_port());
-            _servers.getServer().add(nsServer);
+            String cname = anyNode.getClass().toString();
+            
+            if (cname.equals("class tamriel.cyrodiil.champion.thor.bo.NimbusServerNode")) {
+                
+                Servers.NimbusServer nsServer = new Servers.NimbusServer();
+                
+                
+                NimbusServerNode nsNode = (NimbusServerNode) anyNode;
+                nsServer.setDisplayName(nsNode.getName());
+                nsServer.setHostName(nsNode.getHost());
+                nsServer.setUsername(nsNode.getUsername());
+                nsServer.setPassword(String.valueOf(nsNode.getPassword()));
+                nsServer.setUiport((short) nsNode.getUi_port());
+                _servers.getNimbusServer().add(nsServer);
+            }
 
+            if (cname.equals("class tamriel.cyrodiil.champion.thor.bo.AccumuloServerNode")) {
+                
+                Servers.AccumuloServer nsServer = new Servers.AccumuloServer();
+                
+                
+                AccumuloServerNode aNode = (AccumuloServerNode) anyNode;
+                nsServer.setHostName(aNode.getHost());
+                nsServer.setDbAccount(aNode.getUsername());
+                nsServer.setDbPassword(String.valueOf(aNode.getPassword()));
+                nsServer.setMonitorPort(new Integer(aNode.getUi_port()).toString());
+                _servers.getAccumuloServer().add(nsServer);
+            }
+            
             // output pretty printed
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             jaxbMarshaller.marshal(_servers, xmlFile);
@@ -228,22 +268,19 @@ public final class MainTopComponent extends TopComponent {
         }
     }
     //Uses JAXB
-    //Creates Nodes in the Storms jTree node using the disk's XML File.
-
+    //Creates Nodes in the jTree using the disk's XML File.
     private void loadServers() {
 
         try {
 
             if (xmlFile.exists()) {
-
-                for (JaxbNimbusServer s : _servers.getServer()) {
-                    NimbusServerNode nsNode = new NimbusServerNode();
-                    nsNode.setHost(s.getHostName());
-                    nsNode.setName(s.getDisplayName());
-                    nsNode.setPassword(s.getPassword());
-                    nsNode.setUi_port(s.getUiport());
-                    nsNode.setUsername(s.getUsername());
-                    addServer(nsNode, false);
+                //load the storm nimbii?
+                for (Servers.NimbusServer s : _servers.getNimbusServer()) {
+                    
+                    addServer(parseJaxbNimbus(s), false);
+                }
+                for (Servers.AccumuloServer a : _servers.getAccumuloServer()) {
+                    addServer(parseJaxbAccumulo(a), false);
                 }
             } else {
                 xmlFile.createNewFile();
@@ -252,5 +289,26 @@ public final class MainTopComponent extends TopComponent {
         } catch (Exception err) {
         }
 
+    }
+
+    // converts jaxb nimbus server to JTreeNode.
+    private NimbusServerNode parseJaxbNimbus(Servers.NimbusServer s) {
+        NimbusServerNode nsNode = new NimbusServerNode();
+        nsNode.setHost(s.getHostName());
+        nsNode.setName(s.getDisplayName());
+        nsNode.setPassword(s.getPassword());
+        nsNode.setUi_port(s.getUiport());
+        nsNode.setUsername(s.getUsername());
+        return nsNode;
+    }
+    // converts jaxb accumulo server to JTreeNode.
+    private AccumuloServerNode parseJaxbAccumulo(Servers.AccumuloServer a) {
+        AccumuloServerNode asNode = new AccumuloServerNode();
+        asNode.setHost(a.getHostName());;
+        asNode.setName(a.getHostName());
+        asNode.setPassword(a.getDbPassword());
+        asNode.setUi_port(new Integer(a.getMonitorPort()));
+        asNode.setUsername(a.getDbAccount());
+        return asNode;
     }
 }

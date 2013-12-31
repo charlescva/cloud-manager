@@ -18,10 +18,12 @@ import tamriel.cyrodiil.champion.thor.ui.NewAccumuloDialog;
         id = "tamriel.cyrodiil.champion.thor.CreateAccumuloServer"
 )
 @ActionRegistration(
+        iconBase = "tamriel/cyrodiil/champion/thor/weather_clouds.png",
         displayName = "#CTL_CreateAccumuloServer"
 )
+
 @ActionReference(path = "Menu/File", position = 1200)
-@Messages("CTL_CreateAccumuloServer=Fetch Accumulo Tables")
+@Messages("CTL_CreateAccumuloServer=Add Accumulo Server...")
 public final class CreateAccumuloServer implements ActionListener {
 
     @Override
