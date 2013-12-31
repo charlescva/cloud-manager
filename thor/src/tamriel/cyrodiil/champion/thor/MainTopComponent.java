@@ -1,10 +1,26 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * @author Charles
+ * This is the Plugin Top Component for the 'cloud-manager'.
+ * This is where I am currently adding servers by 'type'.
+ * 'Storm/Nimbus' types.
+ * 'Accumulo' types.
+ * 
+ * the code is clunky and not optimized by any means. I'm more or less
+ * prototyping on the fly so there will be issues.  Again this is all dev 
+ * code that has not been adequeately tested and and should be run with caution.
+ * I am not responsible for any damages that are caused to your system.
+
+ * Thanks,
+ * Charles
+
+
+
  */
 package tamriel.cyrodiil.champion.thor;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -25,7 +41,8 @@ import tamriel.cyrodiil.champion.thor.bo.nsPopupClickListener;
 import tamriel.cyrodiil.champion.thor.jaxb.Servers;
 
 /**
- * Top component which displays something.
+ * @author Charles
+ * Top component which displays the Jtree with server nodes.
  */
 @ConvertAsProperties(dtd = "-//tamriel.cyrodiil.champion.thor//Main//EN",
         autostore = false)
@@ -49,6 +66,8 @@ public final class MainTopComponent extends TopComponent {
     private File xmlFile = new File("settings.xml");
     private Servers _servers;
 
+    private static final Logger logger = Logger.getLogger(MainTopComponent.class.getName());
+    
     public MainTopComponent() {
         initComponents();
         try {
@@ -66,7 +85,7 @@ public final class MainTopComponent extends TopComponent {
             } else {
                 xmlFile.createNewFile();
                 _servers = new Servers();
-                saveServers();
+                createSettingsFile();
             }
             loadServers();
 
@@ -214,7 +233,7 @@ public final class MainTopComponent extends TopComponent {
         jTree1.setModel(new DefaultTreeModel(rootNode));
     }
 
-    private void saveServers() {
+    private void createSettingsFile() {
         try {
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             jaxbMarshaller.marshal(_servers, xmlFile);
@@ -223,7 +242,6 @@ public final class MainTopComponent extends TopComponent {
             err.printStackTrace();
         }
     }
-
     //Uses JAXB
     //Saves an added Server to the XML file.
     private void saveServers(Object anyNode) {
@@ -265,6 +283,7 @@ public final class MainTopComponent extends TopComponent {
 
         } catch (Exception err) {
             err.printStackTrace();
+            
         }
     }
     //Uses JAXB

@@ -22,6 +22,8 @@ import java.io.OutputStream;
  * 
  * @author Christian Plattner, plattner@inf.ethz.ch
  * @version $Id: SCPClient.java,v 1.11 2006/08/02 11:57:12 cplattne Exp $
+ * 
+ * Thanks Christian!
  */
 
 public class SCPservice

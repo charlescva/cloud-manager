@@ -25,9 +25,29 @@ import tamriel.cyrodiil.champion.thor.bo.NimbusServerNode;
 
 
 /**
- *
  * @author Charles
+ *
+ *
+ * In this class i took methods from the SCPservice class and implemented them 
+ * with this extended swing worker so that I could report scp progress to the 
+ * ui thread.  read the authors comments below for more information on the ssh 
+ * client code.
+ *  * 
+ * -------------------------------------
+ * 
+ * A very basic <code>SCPClient</code> that can be used to copy files from/to
+ * the SSH-2 server. On the server side, the "scp" program must be in the PATH.
+ * <p>
+ * This scp client is thread safe - you can download (and upload) different sets
+ * of files concurrently without any troubles. The <code>SCPClient</code> is
+ * actually mapping every request to a distinct {@link Session}.
+ * 
+ * @author Christian Plattner, plattner@inf.ethz.ch
+ * @version $Id: SCPClient.java,v 1.11 2006/08/02 11:57:12 cplattne Exp $
+ * 
+ * 
  */
+ 
 public class SCPTopologyDeployer extends SwingWorker<String, Integer> {
 
     private Connection conn;

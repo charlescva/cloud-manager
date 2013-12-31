@@ -35,6 +35,9 @@ public class nsPopupClickListener extends MouseAdapter {
 
     private void doPop(MouseEvent e) {
         if (_nsNode != null) {
+            
+            String triggerNode = e.getComponent().getClass().toString();
+            
             NimbusServerPopupMenu menu = new NimbusServerPopupMenu(_nsNode);
             menu.show(e.getComponent(), e.getX(), e.getY());
         }
