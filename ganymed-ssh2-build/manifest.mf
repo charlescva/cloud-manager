@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module: ch.ethz.ssh2
-OpenIDE-Module-Localizing-Bundle: ch/ethz/ssh2/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
-
