@@ -69,6 +69,7 @@ public class NewNimbusServerDialog extends javax.swing.JDialog {
         PasswordField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle(org.openide.util.NbBundle.getMessage(NewNimbusServerDialog.class, "NewNimbusServerDialog.title")); // NOI18N
         setLocationByPlatform(true);
 
         jLabel1.setText(org.openide.util.NbBundle.getMessage(NewNimbusServerDialog.class, "NewNimbusServerDialog.jLabel1.text")); // NOI18N
