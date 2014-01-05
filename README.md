@@ -1,7 +1,13 @@
 cloud-manager
 =============
 
-Netbeans Platform Module for management of open source distributed software
+For screenshots, installation instructions and more, visit the wiki first!
+https://github.com/charlescva/cloud-manager/wiki
+
+
+Description:
+
+Netbeans Platform Module for management of open source distributed software.  The intention is to be able to compile an application someone without java experience can use for any platform, as well as provide a starting point for anyone interested in building their own distributed architecture and would like to use java to customize and automate administration procedures. 
 
 Updated 12/28/2013
 
