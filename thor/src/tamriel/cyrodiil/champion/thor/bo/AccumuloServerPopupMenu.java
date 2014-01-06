@@ -39,6 +39,7 @@ public class AccumuloServerPopupMenu extends JPopupMenu {
                 
                 FetchAccumuloTablesDialog fatd = new FetchAccumuloTablesDialog(null, true);
                 fatd.SetTextBoxes(associatedNode.getHostname(), new Integer(associatedNode.getUi_port()).toString());
+                fatd.setLocationRelativeTo(WindowManager.getDefault().getMainWindow());
                 fatd.setVisible(true);
             }
         });
@@ -49,7 +50,7 @@ public class AccumuloServerPopupMenu extends JPopupMenu {
             public void actionPerformed(ActionEvent e) {
                 
                 NewAccumuloServerDialog nds = new NewAccumuloServerDialog(null, true, associatedNode);
-                
+                nds.setLocationRelativeTo(WindowManager.getDefault().getMainWindow());
                 nds.setVisible(true);
             }
 

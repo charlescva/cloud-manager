@@ -12,6 +12,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
+import org.openide.windows.WindowManager;
 import tamriel.cyrodiil.champion.thor.ui.SendFileDialog;
 
 @ActionID(
@@ -33,6 +34,7 @@ public final class SendFile implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         SendFileDialog sfd = new SendFileDialog(null, true);
+        sfd.setLocationRelativeTo(WindowManager.getDefault().getMainWindow());
         sfd.setVisible(true);
     }
 }

@@ -39,7 +39,7 @@ public class NimbusServerPopupMenu extends JPopupMenu {
             public void actionPerformed(ActionEvent e) {
                 
                 NewNimbusServerDialog nds = new NewNimbusServerDialog(null, true, associatedNode);
-                
+                nds.setLocationRelativeTo(WindowManager.getDefault().getMainWindow());
                 nds.setVisible(true);
             }
 
@@ -74,7 +74,7 @@ public class NimbusServerPopupMenu extends JPopupMenu {
                 try {
                     DeployTopologyDialog dtd = new DeployTopologyDialog(null, true);
                     dtd.setNimbus(associatedNode);
-
+                    dtd.setLocationRelativeTo(WindowManager.getDefault().getMainWindow());
                     dtd.setVisible(true);
 
                 } catch (Exception err) {

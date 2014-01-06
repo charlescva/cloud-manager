@@ -12,6 +12,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionID;
 import org.openide.util.NbBundle.Messages;
+import org.openide.windows.WindowManager;
 
 @ActionID(category = "File",
 id = "tamriel.cyrodiil.champion.thor.CreateServerEntry")
@@ -26,6 +27,7 @@ public final class CreateNimbusServer implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         
         NewNimbusServerDialog nds = new NewNimbusServerDialog(null, true);
+        nds.setLocationRelativeTo(WindowManager.getDefault().getMainWindow());
         nds.setVisible(true);
         
         

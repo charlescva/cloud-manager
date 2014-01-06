@@ -11,6 +11,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
+import org.openide.windows.WindowManager;
 import tamriel.cyrodiil.champion.thor.ui.NewAccumuloServerDialog;
 
 @ActionID(
@@ -28,7 +29,10 @@ public final class CreateAccumuloServer implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        
+        
         NewAccumuloServerDialog nda = new NewAccumuloServerDialog(null, true);
+        nda.setLocationRelativeTo(WindowManager.getDefault().getMainWindow());
         nda.setVisible(true);
     }
 }

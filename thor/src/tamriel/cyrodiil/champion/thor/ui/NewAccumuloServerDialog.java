@@ -31,11 +31,14 @@ public class NewAccumuloServerDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         if (asNode != null) {
-            DbPasswordTextField.setText(asNode.getPassword());
-            DbUserTextField.setText(asNode.getDbAccount());
             HostNameTextField.setText(asNode.getHostname());
+            HostUserTextField.setText(asNode.getUsername());
+            HostPasswordTextField.setText(asNode.getPassword());
+            
             ZookeeperTextField.setText(asNode.getZookeeper());
             MonitorPortTextField.setText(new Integer(asNode.getUi_port()).toString());
+            DbUserTextField.setText(asNode.getDbAccount());
+            DbPasswordTextField.setText(asNode.getDbPassword());          
             
                 
         }
