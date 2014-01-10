@@ -25,4 +25,9 @@ anything else...
 Currently I'm the only one working on it in my spare time.  At this point you can build a list
 of Accumulo tables by specifying host name, add a Storm Nimbus Server to a saved list of servers, deploy a storm topology, and quick browse to the storm ui.
 
-I will continue to add more features as time permits.
+
+Update 1/10/2014
+
+Been adding features as time permits.  Now you can send files to an HDFS filesystem from the client.  I plan to implement a 'file manager' type interface with a split view of client FS and HDFS.  And of course, drag and drop capability!  Currently the progress bar is not working for HDFS transfers and the code is executing in the ui thread.  Will clean up when i get a chance, but the core code is in place :)
+
+Added 4 JAR files.  Didn't want to, but I wanted to get it working.  Since the client code is open sourced, at some point I will go through and pick out the classes and methods needed so that it can all be compiled in netbeans.
