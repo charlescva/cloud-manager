@@ -12,7 +12,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URI;
 import java.util.logging.Level;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -20,8 +19,8 @@ import javax.swing.SwingWorker;
 import org.openide.windows.WindowManager;
 import tamriel.cyrodiil.champion.thor.MainTopComponent;
 import tamriel.cyrodiil.champion.thor.jaxb.JaxbServers;
-import tamriel.cyrodiil.champion.thor.service.FileSendSwingWorker;
-import tamriel.cyrodiil.champion.thor.service.hadoop.HdfsConnector;
+import tamriel.cyrodiil.champion.thor.service.HdfsSwingWorker;
+import tamriel.cyrodiil.champion.thor.service.SCPSwingWorker;
 
 /**
  *
@@ -182,22 +181,19 @@ public class SendFileDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_CancelButtonActionPerformed
 
     private void SendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SendButtonActionPerformed
+        jProgressBar1.setValue(0);
+        jProgressBar1.setStringPainted(true);
+        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        SendButton.setEnabled(false);
 
         if (ServerComboBox.getSelectedItem().toString().startsWith("hdfs://")) {
-            HdfsConnector hdfs = null;
-            try {
-                URI hdfsUrl = new URI(ServerComboBox.getSelectedItem().toString());
-                hdfs = new HdfsConnector(hdfsUrl.getHost(), hdfsUrl.getPort());
-                hdfs.copyToHdfs(new File(SourceFileTextField.getText()), TargetPathTextField.getText());
-            } catch (Exception err) {
-                err.printStackTrace();
-            } finally {
-                hdfs.destroy();
-            }
+            HdfsSwingWorker hsw = new HdfsSwingWorker();
+            hsw.setSoureFile(SourceFileTextField.getText());
+            hsw.setTargetFolder(TargetPathTextField.getText());
+            hsw.setUri(ServerComboBox.getSelectedItem().toString());
+            hsw.execute();
+
         } else {
-            jProgressBar1.setValue(0);
-            jProgressBar1.setStringPainted(true);
-            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             try {
                 String AbsoluteFilePath = SourceFileTextField.getText();
                 if (new File(AbsoluteFilePath).exists()) {
@@ -212,7 +208,7 @@ public class SendFileDialog extends javax.swing.JDialog {
 
                     String selectedHost = ServerComboBox.getSelectedItem().toString();
                     Connection conn = new Connection(selectedHost);
-                    FileSendSwingWorker fssw = new FileSendSwingWorker(conn);
+                    SCPSwingWorker fssw = new SCPSwingWorker(conn);
                     fssw.setServer(selectedHost);
                     //server connection info/
                     for (JaxbServers.Server s : tc.getServers().getServer()) {
@@ -262,10 +258,13 @@ public class SendFileDialog extends javax.swing.JDialog {
                         e.getMessage(),
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
-            } finally {
-                this.setCursor(Cursor.getDefaultCursor());
             }
+             
+            
         }
+        
+           this.setCursor(Cursor.getDefaultCursor());
+           SendButton.setEnabled(true);
     }//GEN-LAST:event_SendButtonActionPerformed
 
     /**

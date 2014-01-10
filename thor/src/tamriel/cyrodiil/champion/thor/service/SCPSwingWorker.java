@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import javax.swing.SwingWorker;
-import tamriel.cyrodiil.champion.thor.bo.NimbusServerNode;
 
 
 /**
@@ -48,7 +47,7 @@ import tamriel.cyrodiil.champion.thor.bo.NimbusServerNode;
  * 
  */
  
-public class FileSendSwingWorker extends SwingWorker<String, Integer> {
+public class SCPSwingWorker extends SwingWorker<String, Integer> {
 
     private Connection conn;
     private Double transprogress = 0.0;
@@ -153,7 +152,7 @@ public class FileSendSwingWorker extends SwingWorker<String, Integer> {
         String filename;
     }
 
-    public FileSendSwingWorker(Connection conn) {
+    public SCPSwingWorker(Connection conn) {
         if (conn == null) {
             throw new IllegalArgumentException("Cannot accept null argument!");
         }
