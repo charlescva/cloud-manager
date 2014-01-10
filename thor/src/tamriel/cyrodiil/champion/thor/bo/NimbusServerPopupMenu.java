@@ -21,7 +21,7 @@ import tamriel.cyrodiil.champion.thor.ui.NewNimbusServerDialog;
 public class NimbusServerPopupMenu extends JPopupMenu {
 
     private JMenuItem editServer = new JMenuItem("Edit...");
-    private JMenuItem navigateToUi = new JMenuItem("Open UI in Browser");
+    private JMenuItem navigateToUi = new JMenuItem("Open Nimbus UI");
     private JMenuItem deployTopology = new JMenuItem("Deploy Topology...");
     private JMenuItem deleteServer = new JMenuItem("Remove Server");
     private NimbusServerNode associatedNode;

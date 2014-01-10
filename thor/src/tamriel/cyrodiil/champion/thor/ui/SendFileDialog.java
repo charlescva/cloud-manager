@@ -12,6 +12,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URI;
 import java.util.logging.Level;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -20,6 +21,7 @@ import org.openide.windows.WindowManager;
 import tamriel.cyrodiil.champion.thor.MainTopComponent;
 import tamriel.cyrodiil.champion.thor.jaxb.JaxbServers;
 import tamriel.cyrodiil.champion.thor.service.FileSendSwingWorker;
+import tamriel.cyrodiil.champion.thor.service.hadoop.HdfsConnector;
 
 /**
  *
@@ -33,7 +35,6 @@ public class SendFileDialog extends javax.swing.JDialog {
     /**
      * Creates new form SendFileDialog
      */
-
     public SendFileDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
@@ -41,6 +42,8 @@ public class SendFileDialog extends javax.swing.JDialog {
         for (JaxbServers.Server s : tc.getServers().getServer()) {
             ServerComboBox.addItem(s.getHostname());
         }
+
+        ServerComboBox.addItem("hdfs://namenode:8020");
 
     }
 
@@ -69,6 +72,8 @@ public class SendFileDialog extends javax.swing.JDialog {
         setTitle(org.openide.util.NbBundle.getMessage(SendFileDialog.class, "SendFileDialog.title")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(SendFileDialog.class, "SendFileDialog.jLabel1.text")); // NOI18N
+
+        ServerComboBox.setEditable(true);
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(SendFileDialog.class, "SendFileDialog.jLabel2.text")); // NOI18N
 
@@ -177,78 +182,89 @@ public class SendFileDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_CancelButtonActionPerformed
 
     private void SendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SendButtonActionPerformed
-        
-        
-        jProgressBar1.setValue(0);
-        jProgressBar1.setStringPainted(true);
-        this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        try {
-            String AbsoluteFilePath = SourceFileTextField.getText();
-            if (new File(AbsoluteFilePath).exists()) {
-                String FileName = AbsoluteFilePath.substring(
-                        AbsoluteFilePath.lastIndexOf("\\") + 1);
-                String StagingFolder;
-                if (TargetPathTextField.getText().endsWith("/")) {
-                    StagingFolder = TargetPathTextField.getText();
-                } else {
-                    StagingFolder = TargetPathTextField.getText() + "/";
-                }
 
-                String selectedHost = ServerComboBox.getSelectedItem().toString();
-                Connection conn = new Connection(selectedHost);
-                FileSendSwingWorker fssw = new FileSendSwingWorker(conn);
-                fssw.setServer(selectedHost);
-                //server connection info/
-                for(JaxbServers.Server s: tc.getServers().getServer()) {
-                    if(s.getHostname().equals(ServerComboBox.getSelectedItem().toString())) {
-                        fssw.setUsername(s.getUsername());
-                        fssw.setPassword(s.getPassword());
-                        
-                    }
-                }
-                
-                
-                //Transfer Info.
-                fssw.setLocalFile(AbsoluteFilePath);
-                fssw.setRemoteDir(StagingFolder);
-                
-                fssw.addPropertyChangeListener(new PropertyChangeListener() {
-
-                    @Override
-                    public void propertyChange(PropertyChangeEvent evt) {
-                        if (evt.getPropertyName().equals("fileTransferProgress")) {
-                            jProgressBar1.setValue(((Double) evt.getNewValue()).intValue());
-                        }
-                        if (evt.getPropertyName().equals("sendreport")) {
-                            JOptionPane.showMessageDialog(rootPane,
-                                    "Check IDE Log for details.",
-                                    "Done.",
-                                    JOptionPane.INFORMATION_MESSAGE);
-                            logger.log(Level.INFO.intValue(), evt.getNewValue().toString());
-
-                        }
-                        if (evt.getPropertyName().equals("state")) {
-                            if (evt.getNewValue().equals(SwingWorker.StateValue.DONE)) {
-                                jProgressBar1.setValue(0);
-                                jProgressBar1.setStringPainted(false);
-                                CancelButtonActionPerformed(null);
-                            }
-                        }
-
-                    }
-                });
-                fssw.execute();
-            } else {
-                throw new FileNotFoundException();
+        if (ServerComboBox.getSelectedItem().toString().startsWith("hdfs://")) {
+            HdfsConnector hdfs = null;
+            try {
+                URI hdfsUrl = new URI(ServerComboBox.getSelectedItem().toString());
+                hdfs = new HdfsConnector(hdfsUrl.getHost(), hdfsUrl.getPort());
+                hdfs.copyToHdfs(new File(SourceFileTextField.getText()), TargetPathTextField.getText());
+            } catch (Exception err) {
+                err.printStackTrace();
+            } finally {
+                hdfs.destroy();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(rootPane,
-                    e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-        } finally {
-            this.setCursor(Cursor.getDefaultCursor());
+        } else {
+            jProgressBar1.setValue(0);
+            jProgressBar1.setStringPainted(true);
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            try {
+                String AbsoluteFilePath = SourceFileTextField.getText();
+                if (new File(AbsoluteFilePath).exists()) {
+                    String FileName = AbsoluteFilePath.substring(
+                            AbsoluteFilePath.lastIndexOf("\\") + 1);
+                    String StagingFolder;
+                    if (TargetPathTextField.getText().endsWith("/")) {
+                        StagingFolder = TargetPathTextField.getText();
+                    } else {
+                        StagingFolder = TargetPathTextField.getText() + "/";
+                    }
+
+                    String selectedHost = ServerComboBox.getSelectedItem().toString();
+                    Connection conn = new Connection(selectedHost);
+                    FileSendSwingWorker fssw = new FileSendSwingWorker(conn);
+                    fssw.setServer(selectedHost);
+                    //server connection info/
+                    for (JaxbServers.Server s : tc.getServers().getServer()) {
+                        if (s.getHostname().equals(ServerComboBox.getSelectedItem().toString())) {
+                            fssw.setUsername(s.getUsername());
+                            fssw.setPassword(s.getPassword());
+
+                        }
+                    }
+
+                    //Transfer Info.
+                    fssw.setLocalFile(AbsoluteFilePath);
+                    fssw.setRemoteDir(StagingFolder);
+
+                    fssw.addPropertyChangeListener(new PropertyChangeListener() {
+
+                        @Override
+                        public void propertyChange(PropertyChangeEvent evt) {
+                            if (evt.getPropertyName().equals("fileTransferProgress")) {
+                                jProgressBar1.setValue(((Double) evt.getNewValue()).intValue());
+                            }
+                            if (evt.getPropertyName().equals("sendreport")) {
+                                JOptionPane.showMessageDialog(rootPane,
+                                        "Check IDE Log for details.",
+                                        "Done.",
+                                        JOptionPane.INFORMATION_MESSAGE);
+                                logger.log(Level.INFO.intValue(), evt.getNewValue().toString());
+
+                            }
+                            if (evt.getPropertyName().equals("state")) {
+                                if (evt.getNewValue().equals(SwingWorker.StateValue.DONE)) {
+                                    jProgressBar1.setValue(0);
+                                    jProgressBar1.setStringPainted(false);
+                                    CancelButtonActionPerformed(null);
+                                }
+                            }
+
+                        }
+                    });
+                    fssw.execute();
+                } else {
+                    throw new FileNotFoundException();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(rootPane,
+                        e.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            } finally {
+                this.setCursor(Cursor.getDefaultCursor());
+            }
         }
     }//GEN-LAST:event_SendButtonActionPerformed
 

@@ -48,9 +48,10 @@ public class ContextPopupClickListener extends MouseAdapter {
             NimbusServerPopupMenu menu = new NimbusServerPopupMenu(_nsNode);
             menu.show(e.getComponent(), e.getX(), e.getY());
         }
-        if (_asNode != null) {
+        else if (_asNode != null) {
             AccumuloServerPopupMenu menu = new AccumuloServerPopupMenu(_asNode);
             menu.show(e.getComponent(), e.getX(), e.getY());
         }
+        
     }
 }

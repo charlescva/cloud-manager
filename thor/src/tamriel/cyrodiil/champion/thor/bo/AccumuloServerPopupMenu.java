@@ -22,7 +22,7 @@ public class AccumuloServerPopupMenu extends JPopupMenu {
 
     private JMenuItem editServer = new JMenuItem("Edit...");
     private JMenuItem fetchTableList = new JMenuItem("Fetch Table List...");
-    private JMenuItem navigateToUi = new JMenuItem("Open UI in Browser");
+    private JMenuItem navigateToUi = new JMenuItem("Open Accumulo Monitor");
     private JMenuItem deleteServer = new JMenuItem("Remove Server");
     private AccumuloServerNode associatedNode;
 

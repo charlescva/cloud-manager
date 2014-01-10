@@ -40,6 +40,7 @@ import tamriel.cyrodiil.champion.thor.bo.NimbusServerNode;
 import tamriel.cyrodiil.champion.thor.bo.Server;
 import tamriel.cyrodiil.champion.thor.bo.ServerTypes;
 import tamriel.cyrodiil.champion.thor.bo.ContextPopupClickListener;
+import tamriel.cyrodiil.champion.thor.bo.ServerNode;
 import tamriel.cyrodiil.champion.thor.jaxb.JaxbServers;
 
 /**
@@ -326,6 +327,12 @@ public final class MainTopComponent extends TopComponent {
     // converts jaxb nimbus server to JTreeNode.
     private Server parseJaxbServer(JaxbServers.Server svr) {
 
+        ServerNode svrNode = new ServerNode(svr.getHostname());
+        svrNode.setOs(svr.getOperatingSystem());
+        svrNode.setPassword(svr.getPassword());
+        
+        rootNode.add(svrNode);
+        
         if (svr.getServerType().equals(ServerTypes.NIMBUS.toString())) {
             NimbusServerNode nsNode = new NimbusServerNode();
             JaxbServers.Server.NimbusServer s = svr.getNimbusServer();
