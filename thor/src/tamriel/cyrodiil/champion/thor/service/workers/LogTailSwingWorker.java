@@ -77,7 +77,7 @@ public class LogTailSwingWorker extends SwingWorker<String, Integer> {
                         response = blah.ssh("tail --lines "
                                 + (currLineCount - lastLineCount + startingLine)
                                 + " " + filepath).toString();
-                        if (response!=null) {
+                        if (response!=null && !response.equals("null")) {
                             System.out.println(response);
                             lastTextBlock = new StringBuilder(response);
                             firePropertyChange("lineChange", null, lastTextBlock);

@@ -181,24 +181,44 @@ public class SendFileDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_CancelButtonActionPerformed
 
     private void SendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SendButtonActionPerformed
-        jProgressBar1.setValue(0);
-        jProgressBar1.setStringPainted(true);
+
         this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         SendButton.setEnabled(false);
 
         if (ServerComboBox.getSelectedItem().toString().startsWith("hdfs://")) {
+            jProgressBar1.setIndeterminate(true);
             HdfsSwingWorker hsw = new HdfsSwingWorker();
             hsw.setSoureFile(SourceFileTextField.getText());
             hsw.setTargetFolder(TargetPathTextField.getText());
             hsw.setUri(ServerComboBox.getSelectedItem().toString());
+
+            hsw.addPropertyChangeListener(new PropertyChangeListener() {
+
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (evt.getPropertyName().equals("sendreport")) {
+
+                        JOptionPane.showMessageDialog(rootPane,
+                                "Check IDE Log for details.",
+                                "Done.",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        logger.log(Level.INFO.intValue(), evt.getNewValue().toString());
+                        SendButton.setEnabled(true);
+                        jProgressBar1.setIndeterminate(false);
+                    }
+
+                }
+            });
+
             hsw.execute();
 
         } else {
             try {
+                jProgressBar1.setValue(0);
+                jProgressBar1.setStringPainted(true);
                 String AbsoluteFilePath = SourceFileTextField.getText();
                 if (new File(AbsoluteFilePath).exists()) {
-                    String FileName = AbsoluteFilePath.substring(
-                            AbsoluteFilePath.lastIndexOf("\\") + 1);
+
                     String StagingFolder;
                     if (TargetPathTextField.getText().endsWith("/")) {
                         StagingFolder = TargetPathTextField.getText();
@@ -260,12 +280,11 @@ public class SendFileDialog extends javax.swing.JDialog {
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
             }
-             
-            
+
         }
-        
-           this.setCursor(Cursor.getDefaultCursor());
-           
+
+        this.setCursor(Cursor.getDefaultCursor());
+
     }//GEN-LAST:event_SendButtonActionPerformed
 
     /**
