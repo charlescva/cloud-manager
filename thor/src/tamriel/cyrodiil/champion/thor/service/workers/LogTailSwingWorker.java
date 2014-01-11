@@ -24,6 +24,7 @@ public class LogTailSwingWorker extends SwingWorker<String, Integer> {
     private String username;
     private String password;
     private int startingLine = 0;
+    public boolean running = true;
 
     public int getStartingLine() {
         return startingLine;
@@ -34,16 +35,16 @@ public class LogTailSwingWorker extends SwingWorker<String, Integer> {
     }
 
     public StringBuilder lastTextBlock;
-    
+
     public StringBuilder getLastTextBlock() {
         return lastTextBlock;
     }
-    
+
     @Override
     protected String doInBackground() throws Exception {
-
+        Connection conn = new Connection(server);
         try {
-            Connection conn = new Connection(server);
+
             ConnectionMonitor cmon;
             conn.connect();
             boolean isAuthenticated = conn.authenticateWithPassword(username, password);
@@ -58,11 +59,10 @@ public class LogTailSwingWorker extends SwingWorker<String, Integer> {
                 };
 
                 SCPservice blah = new SCPservice(conn);
-                
+
                 Integer lastLineCount = 0;
                 Integer currLineCount;
                 String response;
-                boolean running = true;
 
                 while (running) {
                     //generates the number of lines in a file.
@@ -77,38 +77,36 @@ public class LogTailSwingWorker extends SwingWorker<String, Integer> {
                         response = blah.ssh("tail --lines "
                                 + (currLineCount - lastLineCount + startingLine)
                                 + " " + filepath).toString();
-                        if (!"null\r\n".equals(response)) {
+                        if (response!=null) {
                             System.out.println(response);
                             lastTextBlock = new StringBuilder(response);
                             firePropertyChange("lineChange", null, lastTextBlock);
-                    
+
                         }
                     }
-                    
-                    
 
                     lastLineCount = currLineCount;
                     //since we're here, no reason to add the starting point.
-                    startingLine=0;
+                    startingLine = 0;
 
                     Thread.sleep(3000);
-                    
-                    if(!running) {
+
+                    if (!running) {
                         break;
                     }
                 }
+                conn.close();
 
             }
         } catch (Exception err) {
             err.printStackTrace();
+            conn.close();
             return "Error.";
-        } 
+        }
         return "Done.";
-        
-        
+
     }
 
-    
     public String getFilepath() {
         return filepath;
     }

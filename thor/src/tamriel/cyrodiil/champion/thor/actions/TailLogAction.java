@@ -12,9 +12,8 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
-import org.openide.windows.Mode;
 import org.openide.windows.WindowManager;
-import tamriel.cyrodiil.champion.thor.ui.LoggerTopComponent;
+import tamriel.cyrodiil.champion.thor.ui.NewLoggerDialog;
 
 
 @ActionID(
@@ -36,9 +35,10 @@ public final class TailLogAction implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
        
-         LoggerTopComponent LTC = new LoggerTopComponent();
-         LTC.open();
-         LTC.requestActive();
+          NewLoggerDialog nds = new NewLoggerDialog(null, true);
+        nds.setLocationRelativeTo(WindowManager.getDefault().getMainWindow());
+        nds.setVisible(true);
+        
        
     }
 }
