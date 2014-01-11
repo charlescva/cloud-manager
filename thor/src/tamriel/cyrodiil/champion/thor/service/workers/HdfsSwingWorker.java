@@ -3,7 +3,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tamriel.cyrodiil.champion.thor.service;
+package tamriel.cyrodiil.champion.thor.service.workers;
 
 import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.ConnectionMonitor;

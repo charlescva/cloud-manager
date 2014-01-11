@@ -2,10 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tamriel.cyrodiil.champion.thor.bo;
+package tamriel.cyrodiil.champion.thor.ui.listeners;
 
+import tamriel.cyrodiil.champion.thor.ui.menus.AccumuloServerPopupMenu;
+import tamriel.cyrodiil.champion.thor.ui.menus.NimbusServerPopupMenu;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import tamriel.cyrodiil.champion.thor.bo.AccumuloServerNode;
+import tamriel.cyrodiil.champion.thor.bo.NimbusServerNode;
 
 /**
  *
@@ -14,6 +18,7 @@ import java.awt.event.MouseEvent;
 public class ContextPopupClickListener extends MouseAdapter {
 
     private NimbusServerNode _nsNode;
+    static ContextPopupClickListener popupContext = new ContextPopupClickListener();
 
     public AccumuloServerNode getAsNode() {
         return _asNode;

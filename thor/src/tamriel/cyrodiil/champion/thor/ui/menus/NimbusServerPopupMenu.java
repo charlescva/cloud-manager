@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tamriel.cyrodiil.champion.thor.bo;
+package tamriel.cyrodiil.champion.thor.ui.menus;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,45 +11,35 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import org.openide.windows.WindowManager;
 import tamriel.cyrodiil.champion.thor.MainTopComponent;
-import tamriel.cyrodiil.champion.thor.ui.FetchAccumuloTablesDialog;
-import tamriel.cyrodiil.champion.thor.ui.NewAccumuloServerDialog;
+import tamriel.cyrodiil.champion.thor.bo.NimbusServerNode;
+import tamriel.cyrodiil.champion.thor.ui.DeployTopologyDialog;
+import tamriel.cyrodiil.champion.thor.ui.NewNimbusServerDialog;
 
 /**
  *
  * @author Charles
  */
-public class AccumuloServerPopupMenu extends JPopupMenu {
+public class NimbusServerPopupMenu extends JPopupMenu {
 
     private JMenuItem editServer = new JMenuItem("Edit...");
-    private JMenuItem fetchTableList = new JMenuItem("Fetch Table List...");
-    private JMenuItem navigateToUi = new JMenuItem("Open Accumulo Monitor");
+    private JMenuItem navigateToUi = new JMenuItem("Open Nimbus UI");
+    private JMenuItem deployTopology = new JMenuItem("Deploy Topology...");
     private JMenuItem deleteServer = new JMenuItem("Remove Server");
-    private AccumuloServerNode associatedNode;
+    private NimbusServerNode associatedNode;
 
     private final MainTopComponent tc = (MainTopComponent) WindowManager.getDefault().findTopComponent("MainTopComponent");
         
     
-    public AccumuloServerPopupMenu(AccumuloServerNode nsNode) {
+    public NimbusServerPopupMenu(NimbusServerNode nsNode) {
 
         associatedNode = nsNode;
-        
-        fetchTableList.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                
-                FetchAccumuloTablesDialog fatd = new FetchAccumuloTablesDialog(null, true);
-                fatd.SetTextBoxes(associatedNode.getHostname(), new Integer(associatedNode.getUi_port()).toString());
-                fatd.setLocationRelativeTo(WindowManager.getDefault().getMainWindow());
-                fatd.setVisible(true);
-            }
-        });
         
         editServer.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 
-                NewAccumuloServerDialog nds = new NewAccumuloServerDialog(null, true, associatedNode);
+                NewNimbusServerDialog nds = new NewNimbusServerDialog(null, true, associatedNode);
                 nds.setLocationRelativeTo(WindowManager.getDefault().getMainWindow());
                 nds.setVisible(true);
             }
@@ -78,10 +68,25 @@ public class AccumuloServerPopupMenu extends JPopupMenu {
             }
         });
 
+        deployTopology.addActionListener(new ActionListener() {
 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    DeployTopologyDialog dtd = new DeployTopologyDialog(null, true);
+                    dtd.setNimbus(associatedNode);
+                    dtd.setLocationRelativeTo(WindowManager.getDefault().getMainWindow());
+                    dtd.setVisible(true);
+
+                } catch (Exception err) {
+                    throw new UnsupportedOperationException(err.getMessage());
+                }
+            }
+
+        });
 
         add(navigateToUi);
-        add(fetchTableList);
+        add(deployTopology);
         add(deleteServer);
         add(editServer);
     }

@@ -17,7 +17,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import tamriel.cyrodiil.champion.thor.bo.NimbusServerNode;
-import tamriel.cyrodiil.champion.thor.service.SCPTopologyDeployer;
+import tamriel.cyrodiil.champion.thor.service.storm.SCPTopologyDeployer;
 
 /**
  *

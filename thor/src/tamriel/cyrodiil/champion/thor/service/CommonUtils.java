@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  */
 public class CommonUtils {
     
-    public static String parseXmlDOM(Document xml) {
+    public static String parseDomToXml(Document xml) {
         
 
         try {

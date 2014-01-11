@@ -19,8 +19,8 @@ import javax.swing.SwingWorker;
 import org.openide.windows.WindowManager;
 import tamriel.cyrodiil.champion.thor.MainTopComponent;
 import tamriel.cyrodiil.champion.thor.jaxb.JaxbServers;
-import tamriel.cyrodiil.champion.thor.service.HdfsSwingWorker;
-import tamriel.cyrodiil.champion.thor.service.SCPSwingWorker;
+import tamriel.cyrodiil.champion.thor.service.workers.HdfsSwingWorker;
+import tamriel.cyrodiil.champion.thor.service.workers.SCPSwingWorker;
 
 /**
  *

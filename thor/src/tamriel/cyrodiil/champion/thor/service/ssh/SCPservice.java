@@ -67,6 +67,8 @@ public class SCPservice
 		String err = receiveLine(is);
 		throw new IOException("Remote scp terminated with error (" + err + ").");
 	}
+        
+        
 
 	private String receiveLine(InputStream is) throws IOException
 	{
@@ -162,6 +164,7 @@ public class SCPservice
 		os.flush();
 	}
 
+        
 	private void sendFiles(Session sess, String[] files, String[] remoteFiles, String mode) throws IOException
 	{
 		byte[] buffer = new byte[8192];
@@ -230,7 +233,8 @@ public class SCPservice
 		os.write("E\n".getBytes());
 		os.flush();
 	}
-
+        
+        
 	private void receiveFiles(Session sess, OutputStream[] targets) throws IOException
 	{
 		byte[] buffer = new byte[8192];

@@ -3,7 +3,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tamriel.cyrodiil.champion.thor.service;
+package tamriel.cyrodiil.champion.thor.service.storm;
 
 import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.ConnectionMonitor;
@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import javax.swing.SwingWorker;
+import tamriel.cyrodiil.champion.thor.bo.NimbusServerNode;
 
 
 /**
@@ -47,35 +48,16 @@ import javax.swing.SwingWorker;
  * 
  */
  
-public class SCPSwingWorker extends SwingWorker<String, Integer> {
+public class SCPTopologyDeployer extends SwingWorker<String, Integer> {
 
     private Connection conn;
     private Double transprogress = 0.0;
-    private String server;
-    private String username;
-    private String password;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    private NimbusServerNode associatedNode;
     private ConnectionMonitor cmon;
     private String StagingFolder;
     private String localFile;
     private String remoteDir;
     private String cmd;
-    
     
     public void setRemoteDir(String destFolder) {
         remoteDir = destFolder;
@@ -86,8 +68,8 @@ public class SCPSwingWorker extends SwingWorker<String, Integer> {
     public void setStagingFolder(String sfolder) {
         StagingFolder = sfolder;
     }
-    public void setServer(String hostname) {
-        server = hostname;
+    public void setAssociatedNode(NimbusServerNode nsNode) {
+        associatedNode = nsNode;
     }
     public void setDeployCommand(String dcmd) {
         cmd = dcmd;
@@ -98,9 +80,9 @@ public class SCPSwingWorker extends SwingWorker<String, Integer> {
     protected String doInBackground() {
         
         try {
-        conn = new Connection(server);
+        conn = new Connection(associatedNode.getHostname());
         conn.connect();
-        boolean isAuthenticated = conn.authenticateWithPassword(username, password);
+        boolean isAuthenticated = conn.authenticateWithPassword(associatedNode.getUsername(), associatedNode.getPassword());
         if (isAuthenticated == false) {
             throw new IOException("Authentication failed.");
         } else {
@@ -115,9 +97,10 @@ public class SCPSwingWorker extends SwingWorker<String, Integer> {
         
         ssh("mkdir " + remoteDir);
         put(localFile, remoteDir);
-        StringBuilder response = new StringBuilder("File Sent.");
+        StringBuilder response = new StringBuilder("Deployment Omitted.");
         
-        firePropertyChange("sendreport", "", response.toString());
+        response = ssh("su -c \"" + cmd + "\" - " + associatedNode.getUsername());
+        firePropertyChange("stormreport", "", response.toString());
         
         return response.toString();
         } catch (Exception e) {
@@ -152,7 +135,7 @@ public class SCPSwingWorker extends SwingWorker<String, Integer> {
         String filename;
     }
 
-    public SCPSwingWorker(Connection conn) {
+    public SCPTopologyDeployer(Connection conn) {
         if (conn == null) {
             throw new IllegalArgumentException("Cannot accept null argument!");
         }

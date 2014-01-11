@@ -39,7 +39,7 @@ import tamriel.cyrodiil.champion.thor.bo.AccumuloServerNode;
 import tamriel.cyrodiil.champion.thor.bo.NimbusServerNode;
 import tamriel.cyrodiil.champion.thor.bo.Server;
 import tamriel.cyrodiil.champion.thor.bo.ServerTypes;
-import tamriel.cyrodiil.champion.thor.bo.ContextPopupClickListener;
+import tamriel.cyrodiil.champion.thor.ui.listeners.ContextPopupClickListener;
 import tamriel.cyrodiil.champion.thor.bo.ServerNode;
 import tamriel.cyrodiil.champion.thor.jaxb.JaxbServers;
 
@@ -142,6 +142,7 @@ public final class MainTopComponent extends TopComponent {
     public void componentOpened() {
 
         jTree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        
         jTree1.addMouseListener(popmenulistener);
 
         jTree1.addTreeSelectionListener(new TreeSelectionListener() {
@@ -150,12 +151,12 @@ public final class MainTopComponent extends TopComponent {
             public void valueChanged(TreeSelectionEvent e) {
 
                 String NodeType = e.getPaths()[0].getLastPathComponent().getClass().getName();
-
-                if (NodeType.equals("javax.swing.tree.DefaultMutableTreeNode")) {
-                    //Do Nothing.
-                    popmenulistener.setNsNode(null);
-                    popmenulistener.setAsNode(null);
-                }
+//                  Later implementation of 'server nodes' with 'service roles'.
+//                if (NodeType.equals("javax.swing.tree.DefaultMutableTreeNode")) {
+//                    //Do Nothing.
+//                    popmenulistener.setNsNode(null);
+//                    popmenulistener.setAsNode(null);
+//                }
 
                 if (NodeType.equals("tamriel.cyrodiil.champion.thor.bo.NimbusServerNode")) {
                     NimbusServerNode nsNode = (NimbusServerNode) e.getPaths()[0].getLastPathComponent();
@@ -327,11 +328,12 @@ public final class MainTopComponent extends TopComponent {
     // converts jaxb nimbus server to JTreeNode.
     private Server parseJaxbServer(JaxbServers.Server svr) {
 
-        ServerNode svrNode = new ServerNode(svr.getHostname());
-        svrNode.setOs(svr.getOperatingSystem());
-        svrNode.setPassword(svr.getPassword());
-        
-        rootNode.add(svrNode);
+        // server nodes?
+//        ServerNode svrNode = new ServerNode(svr.getHostname());
+//        svrNode.setOs(svr.getOperatingSystem());
+//        svrNode.setPassword(svr.getPassword());
+//        
+        //rootNode.add(svrNode);
         
         if (svr.getServerType().equals(ServerTypes.NIMBUS.toString())) {
             NimbusServerNode nsNode = new NimbusServerNode();
