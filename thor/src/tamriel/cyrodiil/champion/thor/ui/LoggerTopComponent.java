@@ -5,11 +5,18 @@
  */
 package tamriel.cyrodiil.champion.thor.ui;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.logging.Level;
+import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
+import org.openide.windows.CloneableTopComponent;
+import tamriel.cyrodiil.champion.thor.service.workers.LogTailSwingWorker;
 
 /**
  * Top component which displays something.
@@ -35,13 +42,17 @@ import org.openide.util.NbBundle.Messages;
     "CTL_LoggerTopComponent=Logger Window",
     "HINT_LoggerTopComponent=This is a Logger window"
 })
-public final class LoggerTopComponent extends TopComponent {
+public final class LoggerTopComponent extends CloneableTopComponent {
 
+    
+    LogTailSwingWorker ltsw;
+    
     public LoggerTopComponent() {
         initComponents();
         setName(Bundle.CTL_LoggerTopComponent());
         setToolTipText(Bundle.HINT_LoggerTopComponent());
 
+        ltsw = new LogTailSwingWorker();
     }
 
     /**
@@ -83,12 +94,30 @@ public final class LoggerTopComponent extends TopComponent {
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        // TODO add custom code on component opening
+        ltsw.setServer("1620-Storm.bi2r.leidos.com");
+        ltsw.setUsername("root");
+        ltsw.setFilepath("~/test.txt");
+        
+        ltsw.addPropertyChangeListener(new PropertyChangeListener() {
+
+                        @Override
+                        public void propertyChange(PropertyChangeEvent evt) {
+                            if (evt.getPropertyName().equals("lineChange")) {
+                                StringBuilder textBlock = ltsw.getLastTextBlock();
+                                jTextArea1.append(textBlock.toString());
+                            }
+                            
+
+                        }
+                    });
+        
+        ltsw.execute();
     }
+        
 
     @Override
     public void componentClosed() {
-        // TODO add custom code on component closing
+        ltsw.cancel(true);
     }
 
     void writeProperties(java.util.Properties p) {

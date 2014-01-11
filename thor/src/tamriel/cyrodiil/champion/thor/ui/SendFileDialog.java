@@ -236,6 +236,7 @@ public class SendFileDialog extends javax.swing.JDialog {
                                         "Done.",
                                         JOptionPane.INFORMATION_MESSAGE);
                                 logger.log(Level.INFO.intValue(), evt.getNewValue().toString());
+                                SendButton.setEnabled(true);
 
                             }
                             if (evt.getPropertyName().equals("state")) {
@@ -264,7 +265,7 @@ public class SendFileDialog extends javax.swing.JDialog {
         }
         
            this.setCursor(Cursor.getDefaultCursor());
-           SendButton.setEnabled(true);
+           
     }//GEN-LAST:event_SendButtonActionPerformed
 
     /**

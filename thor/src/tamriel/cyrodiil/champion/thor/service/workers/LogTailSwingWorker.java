@@ -19,13 +19,26 @@ import tamriel.cyrodiil.champion.thor.service.ssh.SCPservice;
  */
 public class LogTailSwingWorker extends SwingWorker<String, Integer> {
 
-    private Connection conn;
-    private ConnectionMonitor cmon;
     private String filepath;
     private String server;
     private String username;
     private String password;
+    private int startingLine = 0;
 
+    public int getStartingLine() {
+        return startingLine;
+    }
+
+    public void setStartingLine(int startingLine) {
+        this.startingLine = startingLine;
+    }
+
+    public StringBuilder lastTextBlock;
+    
+    public StringBuilder getLastTextBlock() {
+        return lastTextBlock;
+    }
+    
     @Override
     protected String doInBackground() throws Exception {
 
@@ -47,7 +60,7 @@ public class LogTailSwingWorker extends SwingWorker<String, Integer> {
                 SCPservice blah = new SCPservice(conn);
                 
                 Integer lastLineCount = 0;
-                Integer currLineCount = 0;
+                Integer currLineCount;
                 String response;
                 boolean running = true;
 
@@ -60,26 +73,38 @@ public class LogTailSwingWorker extends SwingWorker<String, Integer> {
 
                     if (currLineCount > lastLineCount) {
 
+                    firePropertyChange("lineChange", lastLineCount, currLineCount);
+                        //fetch the remaining lines, plus the original starting point.
                         response = blah.ssh("tail --lines "
-                                + (currLineCount - lastLineCount)
+                                + (currLineCount - lastLineCount + startingLine)
                                 + " " + filepath).toString();
-                        if (response != "null\r\n") {
+                        if (!"null\r\n".equals(response)) {
                             System.out.println(response);
+                            lastTextBlock = new StringBuilder(response);
                         }
                     }
+                    
+                    
 
                     lastLineCount = currLineCount;
+                    //since we're here, no reason to add the starting point.
+                    startingLine=0;
 
                     Thread.sleep(3000);
+                    
+                    if(!running) {
+                        break;
+                    }
                 }
 
             }
         } catch (Exception err) {
             err.printStackTrace();
-        } finally {
-            return "Done.";
-        }
-
+            return "Error.";
+        } 
+        return "Done.";
+        
+        
     }
 
     
