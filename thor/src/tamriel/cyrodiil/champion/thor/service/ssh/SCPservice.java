@@ -3,13 +3,16 @@ package tamriel.cyrodiil.champion.thor.service.ssh;
 
 import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.Session;
+import ch.ethz.ssh2.StreamGobbler;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 /**
@@ -48,6 +51,27 @@ public class SCPservice
 		this.conn = conn;
 	}
 
+        
+        public StringBuilder ssh(String command) throws IOException {
+        
+        StringBuilder response = new StringBuilder();
+        Session sess = conn.openSession();
+        sess.execCommand(command);
+        BufferedReader br = new BufferedReader(
+                new InputStreamReader(
+                new StreamGobbler(sess.getStdout())));
+        String line;
+        while (true) {
+            line = br.readLine();
+            response.append(line + "\r\n");
+            if (line == null) {
+                break;
+            }
+        }
+        sess.close();
+        return response;
+    }
+        
 	private void readResponse(InputStream is) throws IOException
 	{
 		int c = is.read();
@@ -67,6 +91,7 @@ public class SCPservice
 		String err = receiveLine(is);
 		throw new IOException("Remote scp terminated with error (" + err + ").");
 	}
+        
         
         
 

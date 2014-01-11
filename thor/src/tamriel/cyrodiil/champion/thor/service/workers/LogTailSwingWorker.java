@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import javax.swing.SwingWorker;
+import tamriel.cyrodiil.champion.thor.service.ssh.SCPservice;
 
 /**
  *
@@ -29,32 +30,57 @@ public class LogTailSwingWorker extends SwingWorker<String, Integer> {
     @Override
     protected String doInBackground() throws Exception {
 
-        //Establish Connection...
-        conn = new Connection(server);
-        conn.connect();
-        boolean isAuthenticated = conn.authenticateWithPassword(username, password);
-        if (isAuthenticated == false) {
-            throw new IOException("Authentication failed.");
-        } else {
-            cmon = new ConnectionMonitor() {
-                @Override
-                public void connectionLost(Throwable thrwbl) {
-                    throw new UnsupportedOperationException("Lost SSH Connection.");
+        try {
+            Connection conn = new Connection(server);
+            ConnectionMonitor cmon;
+            conn.connect();
+            boolean isAuthenticated = conn.authenticateWithPassword(username, password);
+            if (isAuthenticated == false) {
+                throw new IOException("Authentication failed.");
+            } else {
+                cmon = new ConnectionMonitor() {
+                    @Override
+                    public void connectionLost(Throwable thrwbl) {
+                        throw new UnsupportedOperationException("Lost SSH Connection.");
+                    }
+                };
+
+                SCPservice blah = new SCPservice(conn);
+                
+                Integer lastLineCount = 0;
+                Integer currLineCount = 0;
+                String response;
+                boolean running = true;
+
+                while (running) {
+                    //generates the number of lines in a file.
+                    response = blah.ssh("wc -l " + filepath + " | cut -d \" \" -f 1").toString()
+                            .split("\\r\\n")[0];
+
+                    currLineCount = new Integer(response);
+
+                    if (currLineCount > lastLineCount) {
+
+                        response = blah.ssh("tail --lines "
+                                + (currLineCount - lastLineCount)
+                                + " " + filepath).toString();
+                        if (response != "null\r\n") {
+                            System.out.println(response);
+                        }
+                    }
+
+                    lastLineCount = currLineCount;
+
+                    Thread.sleep(3000);
                 }
-            };
-            conn.addConnectionMonitor(cmon);
+
+            }
+        } catch (Exception err) {
+            err.printStackTrace();
+        } finally {
+            return "Done.";
         }
 
-        Session sess = conn.openSession();
-        
-        InputStream is = sess.getStdout();
-        OutputStream os = sess.getStdin();
-        
-        sess.execCommand("tail -f ~/test.txt");
-        
-        
-        
-        return "Done.";
     }
 
     public Connection getConn() {
