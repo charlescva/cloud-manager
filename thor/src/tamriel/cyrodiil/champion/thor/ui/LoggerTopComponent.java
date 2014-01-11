@@ -7,9 +7,6 @@ package tamriel.cyrodiil.champion.thor.ui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.logging.Level;
-import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -44,9 +41,8 @@ import tamriel.cyrodiil.champion.thor.service.workers.LogTailSwingWorker;
 })
 public final class LoggerTopComponent extends CloneableTopComponent {
 
-    
     LogTailSwingWorker ltsw;
-    
+
     public LoggerTopComponent() {
         initComponents();
         setName(Bundle.CTL_LoggerTopComponent());
@@ -88,32 +84,74 @@ public final class LoggerTopComponent extends CloneableTopComponent {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private String server;
+    private String username;
+    private String password;
+    private String filepath;
+
+    public String getServer() {
+        return server;
+    }
+
+    public void setServer(String server) {
+        this.server = server;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getFilepath() {
+        return filepath;
+    }
+
+    public void setFilepath(String filepath) {
+        this.filepath = filepath;
+    }
+    
+    
+    
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        ltsw.setServer("1620-Storm.bi2r.leidos.com");
-        ltsw.setUsername("root");
-        ltsw.setFilepath("~/test.txt");
-        
+        ltsw.setServer(server);
+        ltsw.setUsername(username);
+        ltsw.setPassword(password);
+        ltsw.setFilepath(filepath);
+
         ltsw.addPropertyChangeListener(new PropertyChangeListener() {
 
-                        @Override
-                        public void propertyChange(PropertyChangeEvent evt) {
-                            if (evt.getPropertyName().equals("lineChange")) {
-                                StringBuilder textBlock = ltsw.getLastTextBlock();
-                                jTextArea1.append(textBlock.toString());
-                            }
-                            
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals("lineChange")) {
+                    jTextArea1.append(
+                            ((StringBuilder) evt.getNewValue())
+                            .toString());
 
-                        }
-                    });
-        
+                }
+
+            }
+        });
+
         ltsw.execute();
     }
-        
 
     @Override
     public void componentClosed() {

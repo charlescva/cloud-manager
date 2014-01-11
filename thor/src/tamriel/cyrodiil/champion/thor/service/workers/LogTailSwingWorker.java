@@ -73,7 +73,6 @@ public class LogTailSwingWorker extends SwingWorker<String, Integer> {
 
                     if (currLineCount > lastLineCount) {
 
-                    firePropertyChange("lineChange", lastLineCount, currLineCount);
                         //fetch the remaining lines, plus the original starting point.
                         response = blah.ssh("tail --lines "
                                 + (currLineCount - lastLineCount + startingLine)
@@ -81,6 +80,8 @@ public class LogTailSwingWorker extends SwingWorker<String, Integer> {
                         if (!"null\r\n".equals(response)) {
                             System.out.println(response);
                             lastTextBlock = new StringBuilder(response);
+                            firePropertyChange("lineChange", null, lastTextBlock);
+                    
                         }
                     }
                     
