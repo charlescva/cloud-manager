@@ -7,10 +7,9 @@ package tamriel.cyrodiil.champion.thor.service.workers;
 
 import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.ConnectionMonitor;
-import ch.ethz.ssh2.Session;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+
 import javax.swing.SwingWorker;
 import tamriel.cyrodiil.champion.thor.service.ssh.SCPservice;
 
@@ -83,14 +82,7 @@ public class LogTailSwingWorker extends SwingWorker<String, Integer> {
 
     }
 
-    public Connection getConn() {
-        return conn;
-    }
-
-    public void setConn(Connection conn) {
-        this.conn = conn;
-    }
-
+    
     public String getFilepath() {
         return filepath;
     }
