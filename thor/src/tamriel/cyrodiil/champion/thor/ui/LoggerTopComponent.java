@@ -87,7 +87,7 @@ public final class LoggerTopComponent extends CloneableTopComponent {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private String server;
+    private String server = null;
     private String username;
     private String password;
     private String filepath;
@@ -131,6 +131,8 @@ public final class LoggerTopComponent extends CloneableTopComponent {
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
+        
+        if(server!=null) {
         ltsw.setServer(server);
         ltsw.setUsername(username);
         ltsw.setPassword(password);
@@ -151,6 +153,9 @@ public final class LoggerTopComponent extends CloneableTopComponent {
         });
 
         ltsw.execute();
+        } else {
+             this.close();
+        }
     }
 
     @Override
