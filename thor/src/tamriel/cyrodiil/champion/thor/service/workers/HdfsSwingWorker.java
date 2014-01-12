@@ -5,7 +5,6 @@
  */
 package tamriel.cyrodiil.champion.thor.service.workers;
 
-
 import java.io.File;
 
 import java.net.URI;
@@ -47,22 +46,28 @@ public class HdfsSwingWorker extends SwingWorker<String, Integer> {
     public void setTargetFolder(String targetFolder) {
         this.targetFolder = targetFolder;
     }
-    
+
     @Override
     protected String doInBackground() {
-
+        int totalcopied = 0;
         HdfsConnector hdfs = null;
         try {
             URI hdfsUrl = new URI(uri);
+
             hdfs = new HdfsConnector(hdfsUrl.getHost(), hdfsUrl.getPort());
+
+            if (!hdfs.exists(targetFolder)) {
+                hdfs.mkdirs(targetFolder);
+            }
             hdfs.copyToHdfs(new File(soureFile), targetFolder);
+            totalcopied = new Integer(hdfs.getTotalCopied());
             hdfs.destroy();
 
         } catch (Exception err) {
             err.printStackTrace();
             return "Failed.  See Log for details.";
         } finally {
-            StringBuilder response = new StringBuilder("File Sent.");
+            StringBuilder response = new StringBuilder("File Sent. Copied " + totalcopied + " bytes.");
 
             firePropertyChange("sendreport", "", response.toString());
 

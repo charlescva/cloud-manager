@@ -17,6 +17,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
+import org.apache.hadoop.util.Progressable;
 
 /**
  *
@@ -32,7 +33,7 @@ public class HdfsConnector {
 
     private boolean fileNameEscaped = true;
 
-    private int chunkSize = 1024;
+    private int chunkSize = 4096;
 
     public HdfsConnector(String host, Integer port) {
         if (host == null) {
@@ -119,7 +120,12 @@ public class HdfsConnector {
         }
 
         FileInputStream fis = new FileInputStream(file);
-        OutputStream out = fileSystem.create(path);
+        OutputStream out = fileSystem.create(path, new Progressable() {
+            @Override
+            public void progress() {
+                bytescopied=+4096;
+            }
+        });
         try {
             IOUtils.copyBytes(fis, out, chunkSize);
         } finally {
@@ -129,7 +135,11 @@ public class HdfsConnector {
 
         return true;
     }
-
+    public int getTotalCopied() {
+        return bytescopied;
+    }
+    private int bytescopied = 0;
+    
     /**
      * Copies a file out of HDFS to local file system
      *

@@ -252,7 +252,7 @@ public class SendFileDialog extends javax.swing.JDialog {
                             }
                             if (evt.getPropertyName().equals("sendreport")) {
                                 JOptionPane.showMessageDialog(rootPane,
-                                        "Check IDE Log for details.",
+                                        evt.getNewValue().toString(),
                                         "Done.",
                                         JOptionPane.INFORMATION_MESSAGE);
                                 logger.log(Level.INFO.intValue(), evt.getNewValue().toString());
