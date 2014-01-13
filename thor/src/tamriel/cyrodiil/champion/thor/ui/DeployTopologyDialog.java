@@ -60,6 +60,7 @@ public class DeployTopologyDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(org.openide.util.NbBundle.getMessage(DeployTopologyDialog.class, "DeployTopologyDialog.title")); // NOI18N
+        setResizable(false);
 
         CancelButton.setText(org.openide.util.NbBundle.getMessage(DeployTopologyDialog.class, "DeployTopologyDialog.CancelButton.text")); // NOI18N
         CancelButton.addActionListener(new java.awt.event.ActionListener() {

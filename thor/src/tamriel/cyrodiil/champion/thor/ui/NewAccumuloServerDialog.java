@@ -73,6 +73,7 @@ public class NewAccumuloServerDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(org.openide.util.NbBundle.getMessage(NewAccumuloServerDialog.class, "NewAccumuloServerDialog.title")); // NOI18N
+        setResizable(false);
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(NewAccumuloServerDialog.class, "NewAccumuloServerDialog.jLabel1.text")); // NOI18N
 

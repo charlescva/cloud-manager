@@ -69,6 +69,7 @@ public class SendFileDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(org.openide.util.NbBundle.getMessage(SendFileDialog.class, "SendFileDialog.title")); // NOI18N
+        setResizable(false);
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(SendFileDialog.class, "SendFileDialog.jLabel1.text")); // NOI18N
 
