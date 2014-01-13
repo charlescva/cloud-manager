@@ -7,6 +7,9 @@ package tamriel.cyrodiil.champion.thor.ui;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -61,6 +64,7 @@ public final class LoggerTopComponent extends CloneableTopComponent {
 
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        StatusLabel = new javax.swing.JLabel();
 
         setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
 
@@ -69,20 +73,28 @@ public final class LoggerTopComponent extends CloneableTopComponent {
         jTextArea1.setRows(5);
         jScrollPane2.setViewportView(jTextArea1);
 
+        org.openide.awt.Mnemonics.setLocalizedText(StatusLabel, org.openide.util.NbBundle.getMessage(LoggerTopComponent.class, "LoggerTopComponent.StatusLabel.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(StatusLabel)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                .addComponent(StatusLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -91,6 +103,15 @@ public final class LoggerTopComponent extends CloneableTopComponent {
     private String username;
     private String password;
     private String filepath;
+    private int tailCount;
+
+    public int getTailCount() {
+        return tailCount;
+    }
+
+    public void setTailCount(int tailCount) {
+        this.tailCount = tailCount;
+    }
 
     public String getServer() {
         return server;
@@ -126,35 +147,47 @@ public final class LoggerTopComponent extends CloneableTopComponent {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel StatusLabel;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        
-        if(server!=null) {
-        ltsw.setServer(server);
-        ltsw.setUsername(username);
-        ltsw.setPassword(password);
-        ltsw.setFilepath(filepath);
 
-        ltsw.addPropertyChangeListener(new PropertyChangeListener() {
+        if (server != null) {
+            setName(server + "\r\n" + filepath);
+            setToolTipText(Bundle.HINT_LoggerTopComponent());
+            
+            ltsw.setServer(server);
+            ltsw.setUsername(username);
+            ltsw.setPassword(password);
+            ltsw.setFilepath(filepath);
+            ltsw.setStartingLine(tailCount);
 
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals("lineChange") && evt.getNewValue() != null) {
-                    jTextArea1.append(
-                            ((StringBuilder) evt.getNewValue())
-                            .toString());
+            
+            ltsw.addPropertyChangeListener(new PropertyChangeListener() {
+            
+                
+                
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (evt.getPropertyName().equals("lineChange") && evt.getNewValue() != null) {
+                        jTextArea1.append(
+                                ((StringBuilder) evt.getNewValue())
+                                .toString());
+
+                        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss MM/dd/yyyy");
+                        Date date = new Date();
+                        StatusLabel.setText(filepath + ": Last Fetched: " + dateFormat.format(date));
+
+                    }
 
                 }
+            });
 
-            }
-        });
-
-        ltsw.execute();
+            ltsw.execute();
         } else {
-             this.close();
+            this.close();
         }
     }
 

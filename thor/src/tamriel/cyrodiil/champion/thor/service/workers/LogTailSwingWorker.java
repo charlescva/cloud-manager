@@ -63,21 +63,31 @@ public class LogTailSwingWorker extends SwingWorker<String, Integer> {
                 Integer lastLineCount = 0;
                 Integer currLineCount;
                 String response;
-
+                boolean started = false;
+                
                 while (running) {
-                    //generates the number of lines in a file.
+                    //generates the number of lines in the requested file on server, returns as string.
                     response = blah.ssh("wc -l " + filepath + " | cut -d \" \" -f 1").toString()
                             .split("\\r\\n")[0];
-
+                    //convert string to int
                     currLineCount = new Integer(response);
-
+                    
+                    //if the count changed, update:
                     if (currLineCount > lastLineCount) {
 
-                        //fetch the remaining lines, plus the original starting point.
+                        int lines;
+                        if (started) {
+                            lines = (currLineCount - lastLineCount);
+
+                        } else {
+                            lines = currLineCount - (currLineCount - startingLine);
+                            started = true;
+                        }
+                        //fetch the lines with tail:
                         response = blah.ssh("tail --lines "
-                                + (currLineCount - lastLineCount + startingLine)
+                                + lines
                                 + " " + filepath).toString();
-                        if (response!=null && !response.equals("null")) {
+                        if (response != null && !response.equals("null")) {
                             System.out.println(response);
                             lastTextBlock = new StringBuilder(response);
                             firePropertyChange("lineChange", null, lastTextBlock);
