@@ -88,7 +88,7 @@ public class LogTailSwingWorker extends SwingWorker<String, Integer> {
                                 + lines
                                 + " " + filepath).toString();
                         if (response != null && !response.equals("null")) {
-                            System.out.println(response);
+                            
                             lastTextBlock = new StringBuilder(response);
                             firePropertyChange("lineChange", null, lastTextBlock);
 
