@@ -24,10 +24,15 @@ public class LogTailSwingWorker extends SwingWorker<String, Integer> {
     private String username;
     private String password;
     private int startingLine = 0;
+    private long refreshRate = 3000;
     public boolean running = true;
 
     public int getStartingLine() {
         return startingLine;
+    }
+
+    public void setRefreshRate(long refreshRate) {
+        this.refreshRate = refreshRate;
     }
 
     public void setStartingLine(int startingLine) {
@@ -42,9 +47,12 @@ public class LogTailSwingWorker extends SwingWorker<String, Integer> {
 
     @Override
     protected String doInBackground() throws Exception {
+        
+        
         Connection conn = new Connection(server);
         try {
 
+            
             ConnectionMonitor cmon;
             conn.connect();
             boolean isAuthenticated = conn.authenticateWithPassword(username, password);
@@ -66,6 +74,7 @@ public class LogTailSwingWorker extends SwingWorker<String, Integer> {
                 boolean started = false;
                 
                 while (running) {
+                    
                     //generates the number of lines in the requested file on server, returns as string.
                     response = blah.ssh("wc -l " + filepath + " | cut -d \" \" -f 1").toString()
                             .split("\\r\\n")[0];
@@ -74,6 +83,7 @@ public class LogTailSwingWorker extends SwingWorker<String, Integer> {
                     
                     //if the count changed, update:
                     if (currLineCount > lastLineCount) {
+                        firePropertyChange("fetchingStatus",null,true);
 
                         int lines;
                         if (started) {
@@ -96,10 +106,10 @@ public class LogTailSwingWorker extends SwingWorker<String, Integer> {
                     }
 
                     lastLineCount = currLineCount;
-                    //since we're here, no reason to add the starting point.
-                    startingLine = 0;
 
-                    Thread.sleep(3000);
+                    
+                    firePropertyChange("fetchingStatus",true,null);
+                    Thread.sleep(refreshRate);
 
                     if (!running) {
                         break;

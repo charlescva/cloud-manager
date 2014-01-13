@@ -65,6 +65,7 @@ public final class LoggerTopComponent extends CloneableTopComponent {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         StatusLabel = new javax.swing.JLabel();
+        jProgressBar1 = new javax.swing.JProgressBar();
 
         setFont(new java.awt.Font("Courier New", 1, 14)); // NOI18N
 
@@ -75,6 +76,10 @@ public final class LoggerTopComponent extends CloneableTopComponent {
 
         org.openide.awt.Mnemonics.setLocalizedText(StatusLabel, org.openide.util.NbBundle.getMessage(LoggerTopComponent.class, "LoggerTopComponent.StatusLabel.text")); // NOI18N
 
+        jProgressBar1.setName(""); // NOI18N
+        jProgressBar1.setString(org.openide.util.NbBundle.getMessage(LoggerTopComponent.class, "LoggerTopComponent.string")); // NOI18N
+        jProgressBar1.setStringPainted(true);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -82,11 +87,12 @@ public final class LoggerTopComponent extends CloneableTopComponent {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(StatusLabel)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
                 .addContainerGap())
+            .addComponent(jProgressBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -94,8 +100,9 @@ public final class LoggerTopComponent extends CloneableTopComponent {
                 .addContainerGap()
                 .addComponent(StatusLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -104,6 +111,7 @@ public final class LoggerTopComponent extends CloneableTopComponent {
     private String password;
     private String filepath;
     private int tailCount;
+    private long refreshRate;
 
     public int getTailCount() {
         return tailCount;
@@ -111,6 +119,10 @@ public final class LoggerTopComponent extends CloneableTopComponent {
 
     public void setTailCount(int tailCount) {
         this.tailCount = tailCount;
+    }
+
+    public void setRefreshRate(long refreshRate) {
+        this.refreshRate = refreshRate;
     }
 
     public String getServer() {
@@ -148,6 +160,7 @@ public final class LoggerTopComponent extends CloneableTopComponent {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel StatusLabel;
+    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
@@ -163,6 +176,7 @@ public final class LoggerTopComponent extends CloneableTopComponent {
             ltsw.setPassword(password);
             ltsw.setFilepath(filepath);
             ltsw.setStartingLine(tailCount);
+            ltsw.setRefreshRate(refreshRate);
 
             
             ltsw.addPropertyChangeListener(new PropertyChangeListener() {
@@ -181,7 +195,14 @@ public final class LoggerTopComponent extends CloneableTopComponent {
                         StatusLabel.setText(filepath + ": Last Fetched: " + dateFormat.format(date));
 
                     }
-
+                    
+                    if(evt.getPropertyName().equals("fetchingStatus")) {
+                        if(evt.getNewValue() != null) {
+                        jProgressBar1.setIndeterminate(true);
+                        } else {
+                            jProgressBar1.setIndeterminate(false);
+                        }                        
+                    }
                 }
             });
 
