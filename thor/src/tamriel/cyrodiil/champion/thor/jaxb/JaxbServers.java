@@ -169,6 +169,11 @@ public class JaxbServers {
     })
     public static class Server {
 
+        @Override
+        public String toString() {
+            return this.hostname;
+        }
+
         @XmlElement(name = "NimbusServer")
         protected JaxbServers.Server.NimbusServer nimbusServer;
         @XmlElement(name = "AccumuloServer")
@@ -188,6 +193,7 @@ public class JaxbServers {
         @XmlAttribute(required = true)
         @XmlSchemaType(name = "anySimpleType")
         protected String password;
+
 
         /**
          * Gets the value of the nimbusServer property.
