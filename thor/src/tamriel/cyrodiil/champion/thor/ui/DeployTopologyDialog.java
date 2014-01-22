@@ -16,6 +16,8 @@ import java.util.logging.Level;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
+import org.openide.windows.WindowManager;
+import tamriel.cyrodiil.champion.thor.MainTopComponent;
 import tamriel.cyrodiil.champion.thor.bo.NimbusServerNode;
 import tamriel.cyrodiil.champion.thor.service.storm.SCPTopologyDeployer;
 
@@ -28,7 +30,8 @@ public class DeployTopologyDialog extends javax.swing.JDialog {
     private NimbusServerNode associatedNode;
 
     private static final Logger logger = Logger.getLogger(DeployTopologyDialog.class);
-            
+    private final MainTopComponent tc = (MainTopComponent) WindowManager.getDefault().findTopComponent("MainTopComponent");
+        
     
     /** Creates new form DeployTopologyDialog */
     public DeployTopologyDialog(java.awt.Frame parent, boolean modal) {
@@ -227,8 +230,13 @@ public class DeployTopologyDialog extends javax.swing.JDialog {
 
     private void BrowseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BrowseButtonActionPerformed
         final JFileChooser fc = new JFileChooser();
+        if(tc.getClientProperty("lastFolder")!=null) {
+            fc.setCurrentDirectory(new File(tc.getClientProperty("lastFolder").toString()));
+        }
+        
         int returnVal = fc.showOpenDialog(DeployTopologyDialog.this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
+            tc.putClientProperty("lastFolder", fc.getCurrentDirectory().toString());
             File file = fc.getSelectedFile();
             FilePathTextField.setText(file.getAbsolutePath());
         } else {

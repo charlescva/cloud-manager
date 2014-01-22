@@ -168,8 +168,13 @@ public class SendFileDialog extends javax.swing.JDialog {
 
     private void BrowseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BrowseButtonActionPerformed
         final JFileChooser fc = new JFileChooser();
+        if(tc.getClientProperty("lastFolder")!=null) {
+            fc.setCurrentDirectory(new File(tc.getClientProperty("lastFolder").toString()));
+        }
+        
         int returnVal = fc.showOpenDialog(SendFileDialog.this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
+            tc.putClientProperty("lastFolder", fc.getCurrentDirectory().toString());
             File file = fc.getSelectedFile();
             SourceFileTextField.setText(file.getAbsolutePath());
         } else {
