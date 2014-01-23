@@ -24,7 +24,7 @@ import org.apache.hadoop.fs.RawLocalFileSystem;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.SequenceFile.Reader;
 import org.apache.hadoop.io.SequenceFile.Writer;
-import tamriel.cyrodiil.champion.thor.jaxb.JaxbServers.Server.AccumuloServer;
+import tamriel.cyrodiil.champion.thor.bo.AccumuloServerNode;
 
 public class UCDDataTool extends SwingWorker {
 
@@ -37,7 +37,7 @@ public class UCDDataTool extends SwingWorker {
 	private List<String> tableNames;
 	private Configuration configuration = new Configuration();
         private String operation;
-        
+        private AccumuloServerNode associatedNode;
         
         UCDDataTool tool;
 
@@ -45,12 +45,13 @@ public class UCDDataTool extends SwingWorker {
         this.operation = operation;
     }
         
-	public UCDDataTool(AccumuloServer as, String auths, String instance, String targetTables, String targetDir) {
-		username = as.getDbAccount();
+	public UCDDataTool(AccumuloServerNode as, String auths, String dbInstance, String targetTables, String targetDir) {
+		associatedNode = as;
+                username = as.getDbAccount();
 		password = as.getDbPassword();
 		String authString = auths;
-		instance = instance;
-		zookeepers = as.getZookeepers();
+		instance = dbInstance;
+		zookeepers = as.getZookeeper();
 		String tables = targetTables;
 		authorizations = new Authorizations(authString.split(","));
 		directory = targetDir;
@@ -81,7 +82,8 @@ public class UCDDataTool extends SwingWorker {
 				++records;
 			}
 			System.err.println(String.format("Extracted %d records from table %s", records, tableName));
-			writer.close();
+			firePropertyChange("status", "", String.format("Extracted %d records from table %s", records, tableName));
+                        writer.close();
 			scanner.clearColumns();
 			scanner.clearScanIterators();
 		}
@@ -124,12 +126,16 @@ public class UCDDataTool extends SwingWorker {
     @Override
     protected Object doInBackground() throws Exception {
         	
+        try {
                 if (operation.equalsIgnoreCase("load")) {
 			tool.load();
 		} else if (operation.equalsIgnoreCase("extract")) {
 			tool.extract();
+                        firePropertyChange("status", "", "Done.");
 		}
-                firePropertyChange("status", "", "Done.");
+        } catch(Exception err) {
+            firePropertyChange("status", "", err.getMessage().toString());
+        }   
                 return 0;
     }
 }

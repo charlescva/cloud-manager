@@ -5,13 +5,18 @@
  */
 package tamriel.cyrodiil.champion.thor.ui;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.net.URL;
+import javax.swing.JFileChooser;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import org.openide.windows.WindowManager;
+import tamriel.cyrodiil.champion.thor.MainTopComponent;
 import tamriel.cyrodiil.champion.thor.bo.AccumuloConfiguration;
 import tamriel.cyrodiil.champion.thor.bo.AccumuloServerNode;
-import tamriel.cyrodiil.champion.thor.jaxb.JaxbServers.Server.AccumuloServer;
 import tamriel.cyrodiil.champion.thor.jaxb.accumulo.Stats;
 import tamriel.cyrodiil.champion.thor.jaxb.accumulo.Table;
 import tamriel.cyrodiil.champion.thor.service.accumulo.UCDDataTool;
@@ -29,17 +34,14 @@ public class FetchAccumuloTablesDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.associatedNode = associatedNode;
-        
+
         loadTables();
     }
 
-    
-    
     private void loadTables() {
-         AccumuloConfiguration ac = new AccumuloConfiguration();
+        AccumuloConfiguration ac = new AccumuloConfiguration();
 
         try {
-         
 
             jaxbContext = JAXBContext.newInstance(Stats.class);
             jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -57,8 +59,7 @@ public class FetchAccumuloTablesDialog extends javax.swing.JDialog {
             System.out.println(err.getMessage());
         }
     }
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -71,6 +72,7 @@ public class FetchAccumuloTablesDialog extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         jEditorPane1 = new javax.swing.JEditorPane();
         jButton2 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(org.openide.util.NbBundle.getMessage(FetchAccumuloTablesDialog.class, "FetchAccumuloTablesDialog.title")); // NOI18N
@@ -78,11 +80,14 @@ public class FetchAccumuloTablesDialog extends javax.swing.JDialog {
         jScrollPane1.setViewportView(jEditorPane1);
 
         org.openide.awt.Mnemonics.setLocalizedText(jButton2, org.openide.util.NbBundle.getMessage(FetchAccumuloTablesDialog.class, "FetchAccumuloTablesDialog.jButton2.text")); // NOI18N
+        jButton2.setToolTipText(org.openide.util.NbBundle.getMessage(FetchAccumuloTablesDialog.class, "FetchAccumuloTablesDialog.jButton2.toolTipText")); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(FetchAccumuloTablesDialog.class, "FetchAccumuloTablesDialog.jLabel1.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -93,7 +98,8 @@ public class FetchAccumuloTablesDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton2)))
                 .addContainerGap())
         );
@@ -103,7 +109,9 @@ public class FetchAccumuloTablesDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2)
+                    .addComponent(jLabel1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -114,9 +122,52 @@ public class FetchAccumuloTablesDialog extends javax.swing.JDialog {
     private JAXBContext jaxbContext;
     private Unmarshaller jaxbUnmarshaller;
     private Marshaller jaxbMarshaller;
-    
+    private final MainTopComponent tc = (MainTopComponent) WindowManager.getDefault().findTopComponent("MainTopComponent");
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        UCDDataTool tool = new UCDDataTool(null, null, null, null, null);
+
+        final JFileChooser fc = new JFileChooser();
+        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        if (tc.getClientProperty("lastFolder") != null) {
+            fc.setCurrentDirectory(new File(tc.getClientProperty("lastFolder").toString()));
+        }
+
+        int returnVal = fc.showOpenDialog(FetchAccumuloTablesDialog.this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            jButton2.setEnabled(false);
+            tc.putClientProperty("lastFolder", fc.getCurrentDirectory().toString());
+
+            String destFolder = fc.getSelectedFile().getAbsolutePath();
+
+            String[] tables = jEditorPane1.getText().split("\r\n");
+            String tablesDelimited = "";
+            for (String table : tables) {
+                tablesDelimited += table + ",";
+            }
+            try {
+                UCDDataTool tool = new UCDDataTool(associatedNode, "U", "gm", tablesDelimited, destFolder);
+
+                tool.addPropertyChangeListener(new PropertyChangeListener() {
+
+                    @Override
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        if (evt.getPropertyName().equals("status")) {
+                            jLabel1.setText(evt.getNewValue().toString());                            
+                        }
+                    }
+                });
+
+                tool.setOperation("extract");
+                //tool.execute();
+                tool.extract();
+            } catch (Exception err) {
+                err.printStackTrace();
+            }
+        } else {
+            //do nothing.
+
+        }
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -160,10 +211,11 @@ public class FetchAccumuloTablesDialog extends javax.swing.JDialog {
             }
         });
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton2;
     private javax.swing.JEditorPane jEditorPane1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

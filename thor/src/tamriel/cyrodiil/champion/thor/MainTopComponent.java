@@ -208,6 +208,7 @@ public final class MainTopComponent extends TopComponent {
     public void addServer(Server svr, boolean toXmlFile) {
 
         if (svr.getServerType() == ServerTypes.ACCUMULO) {
+            
             accumulosNode.add((AccumuloServerNode) svr);
         }
         if (svr.getServerType() == ServerTypes.NIMBUS) {
@@ -312,6 +313,7 @@ public final class MainTopComponent extends TopComponent {
                 for (JaxbServers.Server s : _servers.getServer()) {
 
                     addServer(parseJaxbServer(s), false);
+                    
                 }
             } else {
                 xmlFile.createNewFile();
@@ -361,6 +363,9 @@ public final class MainTopComponent extends TopComponent {
             //nimbus fields
             asNode.setUi_port(new Integer(s.getMonitorPort()));
             asNode.setZookeeper(s.getZookeepers());
+            asNode.setDbAccount(s.getDbAccount());
+            asNode.setDbPassword(s.getDbPassword());
+            
             return asNode;
         } else {
             return null;
