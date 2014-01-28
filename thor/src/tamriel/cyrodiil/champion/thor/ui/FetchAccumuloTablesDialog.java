@@ -5,17 +5,21 @@
  */
 package tamriel.cyrodiil.champion.thor.ui;
 
+import java.awt.TrayIcon;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.URL;
+import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.ListModel;
+import javax.swing.SwingWorker;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import org.openide.windows.WindowManager;
 import tamriel.cyrodiil.champion.thor.MainTopComponent;
-import tamriel.cyrodiil.champion.thor.bo.AccumuloConfiguration;
 import tamriel.cyrodiil.champion.thor.bo.AccumuloServerNode;
 import tamriel.cyrodiil.champion.thor.jaxb.accumulo.Stats;
 import tamriel.cyrodiil.champion.thor.jaxb.accumulo.Table;
@@ -26,6 +30,12 @@ import tamriel.cyrodiil.champion.thor.service.accumulo.UCDDataTool;
  * @author Ottch
  */
 public class FetchAccumuloTablesDialog extends javax.swing.JDialog {
+
+    private static AccumuloServerNode associatedNode;
+    private JAXBContext jaxbContext;
+    private Unmarshaller jaxbUnmarshaller;
+    private Marshaller jaxbMarshaller;
+    private final MainTopComponent tc = (MainTopComponent) WindowManager.getDefault().findTopComponent("MainTopComponent");
 
     /**
      * Creates new form NewAccumuloDialog
@@ -39,24 +49,25 @@ public class FetchAccumuloTablesDialog extends javax.swing.JDialog {
     }
 
     private void loadTables() {
-        AccumuloConfiguration ac = new AccumuloConfiguration();
 
         try {
-
             jaxbContext = JAXBContext.newInstance(Stats.class);
             jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             jaxbMarshaller = jaxbContext.createMarshaller();
 
-            Stats stats = new Stats();
-            stats = (Stats) jaxbUnmarshaller.unmarshal(new URL("http://" + associatedNode.getHostname() + ":" + associatedNode.getUi_port() + "/xml"));
-
+            Stats stats = (Stats) jaxbUnmarshaller.unmarshal(
+                    new URL("http://"
+                            + associatedNode.getHostname()
+                            + ":"
+                            + associatedNode.getUi_port()
+                            + "/xml"));
             String results = new String();
             for (Table t : stats.getTables().getTable()) {
                 results = results.concat(t.getTablename() + "\r\n");
             }
-            jEditorPane1.setText(results);
+            jTextArea1.setText(results);
         } catch (Exception err) {
-            System.out.println(err.getMessage());
+            err.printStackTrace();
         }
     }
 
@@ -69,15 +80,16 @@ public class FetchAccumuloTablesDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jEditorPane1 = new javax.swing.JEditorPane();
         jButton2 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        instanceNameTextField = new javax.swing.JTextField();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(org.openide.util.NbBundle.getMessage(FetchAccumuloTablesDialog.class, "FetchAccumuloTablesDialog.title")); // NOI18N
-
-        jScrollPane1.setViewportView(jEditorPane1);
 
         org.openide.awt.Mnemonics.setLocalizedText(jButton2, org.openide.util.NbBundle.getMessage(FetchAccumuloTablesDialog.class, "FetchAccumuloTablesDialog.jButton2.text")); // NOI18N
         jButton2.setToolTipText(org.openide.util.NbBundle.getMessage(FetchAccumuloTablesDialog.class, "FetchAccumuloTablesDialog.jButton2.toolTipText")); // NOI18N
@@ -87,7 +99,19 @@ public class FetchAccumuloTablesDialog extends javax.swing.JDialog {
             }
         });
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(FetchAccumuloTablesDialog.class, "FetchAccumuloTablesDialog.jLabel1.text")); // NOI18N
+        instanceNameTextField.setText(org.openide.util.NbBundle.getMessage(FetchAccumuloTablesDialog.class, "FetchAccumuloTablesDialog.instanceNameTextField.text")); // NOI18N
+
+        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane2.setViewportView(jTextArea1);
+
+        jSplitPane1.setTopComponent(jScrollPane2);
+
+        jScrollPane1.setViewportView(jList1);
+
+        jSplitPane1.setRightComponent(jScrollPane1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -96,10 +120,11 @@ public class FetchAccumuloTablesDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .addComponent(jSplitPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(4, 4, 4)
+                        .addComponent(instanceNameTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 805, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)))
                 .addContainerGap())
         );
@@ -107,68 +132,92 @@ public class FetchAccumuloTablesDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 561, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
-                    .addComponent(jLabel1))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(instanceNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private static AccumuloServerNode associatedNode;
-    private JAXBContext jaxbContext;
-    private Unmarshaller jaxbUnmarshaller;
-    private Marshaller jaxbMarshaller;
-    private final MainTopComponent tc = (MainTopComponent) WindowManager.getDefault().findTopComponent("MainTopComponent");
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-        final JFileChooser fc = new JFileChooser();
-        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        if (tc.getClientProperty("lastFolder") != null) {
-            fc.setCurrentDirectory(new File(tc.getClientProperty("lastFolder").toString()));
-        }
-
-        int returnVal = fc.showOpenDialog(FetchAccumuloTablesDialog.this);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            jButton2.setEnabled(false);
-            tc.putClientProperty("lastFolder", fc.getCurrentDirectory().toString());
-
-            String destFolder = fc.getSelectedFile().getAbsolutePath();
-
-            String[] tables = jEditorPane1.getText().split("\r\n");
-            String tablesDelimited = "";
-            for (String table : tables) {
-                tablesDelimited += table + ",";
-            }
-            try {
-                UCDDataTool tool = new UCDDataTool(associatedNode, "U", "gm", tablesDelimited, destFolder);
-
-                tool.addPropertyChangeListener(new PropertyChangeListener() {
-
-                    @Override
-                    public void propertyChange(PropertyChangeEvent evt) {
-                        if (evt.getPropertyName().equals("status")) {
-                            jLabel1.setText(evt.getNewValue().toString());                            
-                        }
-                    }
-                });
-
-                tool.setOperation("extract");
-                tool.execute();
-                //tool.extract();
-            } catch (Exception err) {
-                err.printStackTrace();
-            }
+        if (instanceNameTextField.getText().equals("Instance Name")) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid instance name.", "Invalid Instance Name", JOptionPane.ERROR_MESSAGE);
         } else {
-            //do nothing.
+            final JFileChooser fc = new JFileChooser();
+            fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            if (tc.getClientProperty("lastFolder") != null) {
+                fc.setCurrentDirectory(new File(tc.getClientProperty("lastFolder").toString()));
+            }
+            int returnVal = fc.showOpenDialog(FetchAccumuloTablesDialog.this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                setEnablement(false);
+                tc.putClientProperty("lastFolder", fc.getCurrentDirectory().toString());
+                String destFolder = fc.getSelectedFile().getAbsolutePath();
+                String tablesDelimited = "";
+                for (String table : jTextArea1.getText().split("\r\n")) {
+                    tablesDelimited += table + ",";
+                }
+                try {
+                    UCDDataTool tool = new UCDDataTool(associatedNode, instanceNameTextField.getText(), tablesDelimited, destFolder);
 
+                    tool.addPropertyChangeListener(new PropertyChangeListener() {
+
+                        String state;
+
+                        @Override
+                        public void propertyChange(PropertyChangeEvent evt) {
+
+                            if (evt.getPropertyName().equals("status")) {
+                                addListItem(evt.getNewValue().toString());
+                            }
+
+                            if (evt.getPropertyName().equals("state")) {
+                                state = evt.getNewValue().toString();
+                                if (state.equals(SwingWorker.StateValue.STARTED)) {
+                                    addListItem("Started.");
+                                }
+                                if (state.equals(SwingWorker.StateValue.DONE)) {
+                                    addListItem("Done.");
+                                    setEnablement(true);
+                                }
+                            }
+                        }
+                    });
+
+                    tool.setOperation("extract");
+                    tool.execute();
+                    //tool.extract();
+                } catch (Exception err) {
+                    err.printStackTrace();
+                }
+            } else {
+                //do nothing.
+
+            }
         }
 
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void addListItem(String text) {
+        DefaultListModel lm = new DefaultListModel();
+        for (int i = 0; i < jList1.getModel().getSize(); i++) {
+            lm.addElement(jList1.getModel().getElementAt(i));
+        }
+        lm.addElement(text);
+        jList1.setModel(lm);
+    }
+
+    private void setEnablement(boolean status) {
+        instanceNameTextField.setEnabled(status);
+        jButton2.setEnabled(status);
+        jTextArea1.setEnabled(status);
+    }
 
     /**
      * @param args the command line arguments
@@ -213,9 +262,12 @@ public class FetchAccumuloTablesDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField instanceNameTextField;
     private javax.swing.JButton jButton2;
-    private javax.swing.JEditorPane jEditorPane1;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }
