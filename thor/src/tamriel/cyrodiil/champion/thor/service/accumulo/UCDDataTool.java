@@ -39,7 +39,7 @@ public class UCDDataTool extends SwingWorker {
         private String operation;
         private AccumuloServerNode associatedNode;
         
-        UCDDataTool tool;
+        
 
     public void setOperation(String operation) {
         this.operation = operation;
@@ -128,9 +128,9 @@ public class UCDDataTool extends SwingWorker {
         	
         try {
                 if (operation.equalsIgnoreCase("load")) {
-			tool.load();
+			load();
 		} else if (operation.equalsIgnoreCase("extract")) {
-			tool.extract();
+			extract();
                         firePropertyChange("status", "", "Done.");
 		}
         } catch(Exception err) {

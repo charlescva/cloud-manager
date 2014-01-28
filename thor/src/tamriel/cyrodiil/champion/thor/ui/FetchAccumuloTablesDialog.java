@@ -158,8 +158,8 @@ public class FetchAccumuloTablesDialog extends javax.swing.JDialog {
                 });
 
                 tool.setOperation("extract");
-                //tool.execute();
-                tool.extract();
+                tool.execute();
+                //tool.extract();
             } catch (Exception err) {
                 err.printStackTrace();
             }
